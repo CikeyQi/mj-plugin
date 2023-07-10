@@ -46,7 +46,7 @@ export class Imagine extends plugin {
 				e.reply(`生成图像失败，请查看控制台输出`)
 				return true
 			} else {
-				resReply = await e.reply(segment.image(task.imageUrl), true)
+				let resReply = await e.reply(segment.image(task.imageUrl), true)
 				if (!resReply) {
 					e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)
 				}

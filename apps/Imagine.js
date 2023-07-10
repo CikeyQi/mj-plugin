@@ -24,8 +24,16 @@ export class Imagine extends plugin {
 
 	async Imagine(e) {
 		e = await parseImg(e)
+		let base64 = ''
+		if (e.img) {
+			let img = await axios.get(e.img[0], {
+				responseType: 'arraybuffer'
+			});
+			base64 = Buffer.from(img.data, 'binary')
+				.toString('base64');
+		}
 		let params = {
-			base64: e.img ? e.img[0] : '',
+			base64: e.img ? "data:image/png;base64," + base64 : '',
 			prompt: e.msg.replace('/mj imagine ', ''),
 			notifyHook: '',
 			state: '',

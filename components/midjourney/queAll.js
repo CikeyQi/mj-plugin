@@ -1,6 +1,5 @@
 import axios from 'axios'
 import Config from '../../components/config/config.js'
-import Log from '../../utils/log.js'
 
 /** 
  * 查询所有任务

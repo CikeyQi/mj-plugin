@@ -2,7 +2,7 @@ import YAML from 'yaml'
 import fs from 'fs'
 import Config from '../components/config/config.js'
 import { pluginRoot } from '../model/path.js'
-import Log from '../utils/Log.js'
+import Log from '../utils/logs.js'
 
 class Init {
     constructor() {

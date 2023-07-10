@@ -1,7 +1,7 @@
 import YAML from 'yaml'
 import fs from 'fs'
 import { pluginRoot } from '../../model/path.js'
-import Log from '../../utils/log.js'
+import Log from '../../utils/logs.js'
 
 class Config {
     getAPI() {

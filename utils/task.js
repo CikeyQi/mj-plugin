@@ -1,4 +1,4 @@
-import Log from './log.js'
+import Log from './logs.js'
 import { fetch } from '../components/midjourney/queID.js'
 
 export async function getResults(id) {

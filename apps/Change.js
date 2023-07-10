@@ -1,6 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { change } from '../components/midjourney/upChange.js'
-import { parseImg } from '../../../lib/plugins/parseImg.js'
+import { parseImg } from '../utils/utils.js'
 
 export class Change extends plugin {
 	constructor() {

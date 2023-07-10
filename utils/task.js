@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { Log } from './log.js'
+import Log from './log.js'
 import { fetch } from '../components/midjourney/queID.js'
 
 export async function getResults(id) {

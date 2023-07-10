@@ -12,6 +12,7 @@ export async function getResults(id) {
     let task = await fetch(id)
 
     while (task.data.status == 'IN_PROGRESS' || task.data.status == 'NOT_START' || task.data.status == 'SUBMITTED') {
+        Log.i(`[${task.data.progress}]等待任务完成...`)
         await new Promise((resolve) => {
             setTimeout(() => {
                 resolve()

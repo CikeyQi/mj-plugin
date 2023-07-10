@@ -1,5 +1,6 @@
 import Log from './logs.js'
 import { fetch } from '../components/midjourney/queID.js'
+import Config from '../components/config/config.js'
 
 export async function getResults(id) {
     let baseAPI = Config.getAPI()

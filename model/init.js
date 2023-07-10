@@ -1,4 +1,3 @@
-import YAML from 'yaml'
 import fs from 'fs'
 import Config from '../components/config/config.js'
 import { pluginRoot } from '../model/path.js'

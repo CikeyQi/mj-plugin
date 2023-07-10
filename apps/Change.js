@@ -1,36 +1,49 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { imagine } from '../components/midjourney/upImagine.js'
-import { parseImg } from '../utils/utils.js'
-import { getResults } from '../utils/task.js'
+import { change } from '../components/midjourney/upChange.js'
+import { parseImg } from '../../../lib/plugins/parseImg.js'
 
-export class Imagine extends plugin {
+export class Change extends plugin {
 	constructor() {
 		super({
 			/** 功能名称 */
-			name: 'MJ-想象',
+			name: 'MJ-变化',
 			/** 功能描述 */
-			dsc: 'Midjourney 想象',
+			dsc: 'Midjourney 变化',
 			event: 'message',
 			/** 优先级，数字越小等级越高 */
 			priority: 1009,
 			rule: [{
 				/** 命令正则匹配 */
-				reg: '^/mj imagine .*$',
+				reg: '^/mj change [UuVv] [1-4]$',
 				/** 执行方法 */
-				fnc: 'Imagine',
+				fnc: 'Change',
 			}],
 		})
 	}
 
-	async Imagine(e) {
+	async Change(e) {
 		e = await parseImg(e)
+        let action = ''
+        let type = e.msg.split(' ')[2].toLowerCase()
+        if (type == 'u') {
+            action = 'UPSCALE'
+        } else if (type == 'v') {
+            action = 'VARIATION'
+        }
+        let index = e.msg.split(' ')[3]
+        let taskId = await redis.get(`midjourney:taskId:${e.user_id}`)
+        if (!taskId) {
+            e.reply(`您还没有提交过绘图任务，请先使用/mj imagine提交绘图任务，任务保存时间为30分钟`)
+            return true
+        }
 		let params = {
-			base64: e.img ? e.img[0] : '',
-			prompt: e.msg.replace('/mj imagine ', ''),
-			notifyHook: '',
-			state: '',
-		}
-		const response = await imagine(params);
+            action: action,
+            index: index,
+            notifyHook: '',
+            state: '',
+            taskId: taskId,
+        }
+		const response = await change(params);
 		if (response.data) {
 			if (response.data.code == 1) {
 				e.reply(`绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
@@ -50,7 +63,7 @@ export class Imagine extends plugin {
 				if (!resReply) {
 					e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.data.imageUrl}`)
 				}
-				redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
+                redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
 			}
 		} else {
 			e.reply(`调用Midjourney API失败，请查看控制台输出`)

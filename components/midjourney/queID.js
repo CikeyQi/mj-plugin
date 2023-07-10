@@ -9,6 +9,7 @@ import Config from '../../components/config/config.js'
 export async function fetch(id) {
     let baseAPI = Config.getAPI()
     if (!baseAPI) {
+        Log.e('未配置Midjourney API')
         return false
     }
     return await axios.get(baseAPI + `/mj/task/${id}/fetch`);

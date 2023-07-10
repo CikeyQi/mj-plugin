@@ -13,6 +13,7 @@ import Config from '../../components/config/config.js'
 export async function imagine(params) {
     let baseAPI = Config.getAPI()
     if (!baseAPI) {
+        Log.e('未配置Midjourney API')
         return false
     }
     return axios.post(baseAPI + '/mj/submit/imagine', params)

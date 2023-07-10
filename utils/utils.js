@@ -1,5 +1,4 @@
 import moment from "moment";
-import Config from '../components/ai_painting/config.js';
 
 
 /**
@@ -9,6 +8,7 @@ import Config from '../components/ai_painting/config.js';
 export async function parseImg(e) {
     if (e.msg && e.msg.includes('自己')) {
         e.img = [`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`]
+        e.msg = e.msg.replace('自己', '')
     }
     if (!e.img) {
         if (e.atBot) {
@@ -47,8 +47,6 @@ export async function parseImg(e) {
     return e
 }
 
-
-
 /**获取base64的大小 返回一个数组，依次是[b,kb,mb]；
  * @param {string} base64 
  * @param {boolean} isunit 是否带单位，默认false
@@ -68,33 +66,6 @@ export function bs64Size(base64, isunit = false, tofix = 2) {
         size.forEach((value, index) => size[index] = value + (index == 0 ? "b" : index == 1 ? 'kb' : 'mb'))
     return size
 }
-
-
-
-/** 随机获取数组中的一个成员
- * @param {array} arr 原数组
- * @return {*} 随机返回数组中的一个成员
- */
-export function randomArrayMember(arr) {
-    return arr[Math.floor(Math.random() * arr.length)]
-}
-
-
-
-/**
- * 通过角色别名获取角色原名
- * @param {string} name 角色别称
- * @return {string} 角色原名
- * @return null：未匹配到角色名
- */
-export function getgsName(name) {
-    let nameArr = gsCfg.getAllAbbr()
-    for (let rolename of Object.values(nameArr))
-        if (rolename.includes(name))
-            return rolename[0]
-    return null
-}
-
 
 /**
  * 获取指定用户的昵称。
@@ -123,70 +94,6 @@ export async function getuserName(e, qq = null) {
     }
     return String(user || qq);
 }
-
-
-
-/**获取当前到明天0点的剩余秒数
- *  * @return {string} 当前到明天0点的剩余秒数
- */
-export async function seconds_to_tomorrow_0_Oclock() {
-    // 获取明日0点的时间
-    let time = moment(Date.now()).add(1, "days").format("YYYY-MM-DD 00:00:00");
-    // 到明日零点的剩余秒数
-    let exTime = Math.round(
-        (new Date(time).getTime() - new Date().getTime()) / 1000
-    );
-    return exTime
-}
-
-
-
-/** 判断两个值是否相等，支持数组和对象
- * @param {*} p1 第一个值
- * @param {*} p2 第二个值
- * @return {boolean} 二者是否相等
- */
-export function isEqual(p1, p2) {
-    // 是数组的情况 
-    if (isArray(p1) && isArray(p2)) {
-        if (p1.length != p2.length) {
-            return false
-        }
-        for (let i = 0; i < p1.length; i++) {
-            if (p1[i] != p2[i])
-                return false
-        }
-        return true
-    }
-    // 判断如果传入的不是对象类型的话 就直接返回两个值的比较
-    if (!isObject(p1) || !isObject(p2)) {
-        return p1 === p2
-    }
-    // 判断是否传入同一个对象
-    if (p1 === p2) return true
-    // 判断两个对象的键是否一致
-    let K1 = Object.keys(p1)
-    let K2 = Object.keys(p2)  // -> array
-    if (!isEqual(K1, K2)) return false
-
-    let props1 = Object.getOwnPropertyNames(p1);
-    let props2 = Object.getOwnPropertyNames(p2);
-    if (props1.length != props2.length) {
-        return false;
-    }
-
-    for (let i = 0; i < props1.length; i++) {
-        let propName = props1[i];
-        if (!isEqual(p1[propName], p2[propName])) {
-            return false;
-        }
-    }
-    return true;
-}
-function isObject(p) { return typeof p === 'object' && p !== null }
-function isArray(p) { return Array.isArray(p) }
-
-
 
 /**将文本中的中文数字修改为阿拉伯数字
  * @param {string} text 待修改的文本

@@ -1,6 +1,3 @@
-import moment from "moment";
-
-
 /**
  * 处理消息中的图片：当消息引用了图片，或者消息有@对象，则将对应图片放入e.img ，优先级==> e.source.img > e.img > e.at的头像 > bot头像
  * @return {*} 处理过后的e

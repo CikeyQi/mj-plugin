@@ -1,4 +1,4 @@
-import config from "../components/config/config";
+import Config from '../components/config/config.js'
 
 /**
  * 处理消息中的图片：当消息引用了图片，或者消息有@对象，则将对应图片放入e.img ，优先级==> e.source.img > e.img > e.at的头像 > bot头像
@@ -11,7 +11,7 @@ export async function parseImg(e) {
     }
     if (!e.img) {
         if (e.atBot) {
-            let setting = await config.getSetting()
+            let setting = await Config.getSetting()
             if (setting.shield) {
                 delete e.img;
             } else {

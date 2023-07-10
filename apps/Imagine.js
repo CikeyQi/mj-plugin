@@ -33,11 +33,11 @@ export class Imagine extends plugin {
 			e.reply(`[${response.data.code} ${response.data.description}]`)
 			if (response.data.code == 1) {
 				let task = await fetch(response.data.result)
-				while (task.data.status == 'IN_PROGRESS') {
+				while (task.data.status == 'IN_PROGRESS' || task.data.status == 'NOT_START' || task.data.status == 'SUBMITTED') {
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							resolve()
-						}, 1000)
+						}, 3000)
 					})
 					task = await fetch(response.data.result)
 				}

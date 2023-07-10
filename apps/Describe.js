@@ -1,4 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import axios from 'axios'
 import { describe } from '../components/midjourney/upDescribe.js'
 import { parseImg } from '../utils/utils.js'
 import { getResults } from '../utils/task.js'

@@ -55,6 +55,11 @@ export class Setting extends plugin {
                     return true
                 }
             } else {
+                if (value == 'true') {
+                    value = true
+                } else if (value == 'false') {
+                    value = false
+                }
                 config[key] = value
                 Config.setSetting(config)
                 e.reply(`配置项${key}已修改为${value}`)

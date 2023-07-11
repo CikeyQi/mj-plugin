@@ -65,7 +65,10 @@ export class Change extends plugin {
                 if (!resReply) {
                     e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)
                 }
-                redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
+                // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
+                if (action == 'VARIATION') {
+                    await redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
+                }
             }
         } else {
             e.reply(`调用Midjourney API失败，请查看控制台输出`)

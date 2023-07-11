@@ -56,7 +56,6 @@ export class Describe extends plugin {
 				if (!resReply) {
 					e.reply(`发送消息失败，可能是因为消息过长`)
 				}
-				redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
 			}
 		} else {
 			e.reply(`调用Midjourney API失败，请查看控制台输出`)

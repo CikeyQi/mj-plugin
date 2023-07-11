@@ -21,7 +21,7 @@ export class update extends plugin {
       priority: 1009,
       rule: [
         {
-          reg: "^#mj(插件)?(强制)?更新$",
+          reg: "^/mj(插件)?(强制)?更新$",
           fnc: "update",
         },
       ],
@@ -29,7 +29,7 @@ export class update extends plugin {
   }
 
   /**
-   * rule - 更新ap
+   * rule - 更新mj
    * @returns
    */
   async update() {

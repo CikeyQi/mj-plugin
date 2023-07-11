@@ -56,6 +56,10 @@ export class Change extends plugin {
                 e.reply(`Midjourney API返回错误：[${response.data.code} ${response.data.description}]`, true)
                 return true
             }
+             // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
+            if (action == 'VARIATION') {
+                await redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
+            }
             let task = await getResults(response.data.result)
             if (!task) {
                 e.reply(`生成图像失败，请查看控制台输出`)
@@ -64,10 +68,6 @@ export class Change extends plugin {
                 let resReply = await e.reply([{ ...segment.image(task.imageUrl), origin: true }, `任务耗时：${(task.finishTime - task.startTime) / 1000}s`], true)
                 if (!resReply) {
                     e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)
-                }
-                // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
-                if (action == 'VARIATION') {
-                    await redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
                 }
             }
         } else {

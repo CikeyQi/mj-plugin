@@ -58,7 +58,7 @@ export class Change extends plugin {
                 e.reply(`Midjourney API返回错误：[${response.data.code} ${response.data.description}]`, true)
                 return true
             }
-             // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
+            // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
             if (action == 'VARIATION') {
                 await redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
             }
@@ -68,12 +68,13 @@ export class Change extends plugin {
                 return true
             } else {
                 let configs = Config.getSetting()
-                let img = await axios.get(task.imageUrl,
-                    (configs.proxy.host && configs.proxy.port) ? {
+                const img = await axios.get(task.imageUrl,
+                    {
                         responseType: 'arraybuffer',
-                        proxy: { protocol: 'http', host: `${configs.proxy.host}`, port: `${Number(configs.proxy.port)}` }
-                    } : {
-                        responseType: 'arraybuffer'
+                        proxy: configs.proxy.host && configs.proxy.port ? {
+                            protocol: 'http',
+                            host: `${configs.proxy.host}`, port: `${Number(configs.proxy.port)}`
+                        } : undefined
                     }
                 )
                 let base64 = Buffer.from(img.data, 'binary').toString('base64');

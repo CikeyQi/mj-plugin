@@ -58,12 +58,13 @@ export class Imagine extends plugin {
 				return true
 			} else {
 				let configs = Config.getSetting()
-				let img = await axios.get(task.imageUrl,
-					(configs.proxy.host && configs.proxy.port) ? {
+				const img = await axios.get(task.imageUrl,
+					{
 						responseType: 'arraybuffer',
-						proxy: { protocol: 'http', host: `${configs.proxy.host}`, port: `${Number(configs.proxy.port)}` }
-					} : {
-						responseType: 'arraybuffer'
+						proxy: configs.proxy.host && configs.proxy.port ? {
+							protocol: 'http',
+							host: `${configs.proxy.host}`, port: `${Number(configs.proxy.port)}`
+						} : undefined
 					}
 				)
 				let base64 = Buffer.from(img.data, 'binary').toString('base64');

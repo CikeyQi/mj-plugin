@@ -2,7 +2,7 @@ import axios from 'axios'
 import Log from '../../utils/logs.js'
 import Config from '../../components/config/config.js'
 
-/** 
+/**
  * 提交Imagine任务
  * @param {object} params imagineDTO
  * @param {string} params.base64 垫图base64
@@ -11,11 +11,11 @@ import Config from '../../components/config/config.js'
  * @param {string} params.state 自定义参数
  * @returns
  */
-export async function imagine(params) {
-    let baseAPI = Config.getAPI()
-    if (!baseAPI) {
-        Log.e('未配置Midjourney API')
-        return false
-    }
-    return axios.post(baseAPI + '/mj/submit/imagine', params)
+export async function imagine (params) {
+  const baseAPI = Config.getAPI()
+  if (!baseAPI) {
+    Log.e('未配置Midjourney API')
+    return false
+  }
+  return axios.post(baseAPI + '/mj/submit/imagine', params)
 }

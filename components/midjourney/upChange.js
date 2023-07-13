@@ -2,7 +2,7 @@ import axios from 'axios'
 import Log from '../../utils/logs.js'
 import Config from '../../components/config/config.js'
 
-/** 
+/**
  * 绘图变化
  * @param {object} params changeDTO
  * @param {string} params.action UPSCALE(放大); VARIATION(变换); REROLL(重新生成),可用值:UPSCALE,VARIATION,REROLL
@@ -12,11 +12,11 @@ import Config from '../../components/config/config.js'
  * @param {string} params.taskId 任务ID
  * @returns
  */
-export async function change(params) {
-    let baseAPI = Config.getAPI()
-    if (!baseAPI) {
-        Log.e('未配置Midjourney API')
-        return false
-    }
-    return await axios.post(baseAPI + '/mj/submit/change', params)
+export async function change (params) {
+  const baseAPI = Config.getAPI()
+  if (!baseAPI) {
+    Log.e('未配置Midjourney API')
+    return false
+  }
+  return await axios.post(baseAPI + '/mj/submit/change', params)
 }

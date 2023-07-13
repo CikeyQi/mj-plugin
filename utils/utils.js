@@ -5,7 +5,7 @@ import Config from '../components/config/config.js'
  * @return {*} 处理过后的e
  */
 export async function parseImg (e) {
-  if (e.msg && e.msg.includes('自己')) {
+  if (e.msg?.includes('自己')) {
     e.img = [`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`]
     e.msg = e.msg.replace('自己', '')
   }
@@ -75,7 +75,7 @@ export function bs64Size (base64, isunit = false, tofix = 2) {
  */
 export async function getuserName (e, qq = null) {
   qq = qq || e.user_id
-  if (e && e.isGroup) {
+  if (e?.isGroup) {
     try {
       const member = await Bot.getGroupMemberInfo(e.group_id, qq)
       if (member != undefined) {

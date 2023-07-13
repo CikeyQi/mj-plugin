@@ -14,7 +14,7 @@ export class Question extends plugin {
             priority: 1009,
             rule: [{
                 /** 命令正则匹配 */
-                reg: '^/mj question.*$',
+                reg: '^/mj (question|q).*$',
                 /** 执行方法 */
                 fnc: 'Question',
             }],
@@ -23,13 +23,13 @@ export class Question extends plugin {
 
     async Question(e) {
         // 判断命令中是否有任务ID
-        let reg = /^\/mj question (\d+)$/
+        let reg = /^\/mj (question|q) (\d+)$/
         let match = e.msg.match(reg)
         let taskId = ''
         if (!match) {
             taskId = await redis.get(`midjourney:taskId:${e.user_id}`)
         } else {
-            taskId = match[1]
+            taskId = match[2]
         }
         if (!taskId) {
             e.reply(`您还没有提交过绘图任务，请先使用/mj imagine提交绘图任务，任务保存时间为30分钟`)
@@ -48,7 +48,7 @@ export class Question extends plugin {
             e.reply(`Midjourney API返回错误：[${response.data.code} ${response.data.description}]`, true)
         }
         if (response.data.status == 'SUCCESS') {
-            const base64 = await getPic(response.data)
+            const base64 = await getPic(response.data.imageUrl)
             let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(response.data.finishTime - response.data.startTime) / 1000}s`], true)
             if (!resReply) {
                 e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${response.data.imageUrl}`)

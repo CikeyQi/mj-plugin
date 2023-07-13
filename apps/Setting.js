@@ -15,7 +15,7 @@ export class Setting extends plugin {
             priority: 1009,
             rule: [{
                 /** 命令正则匹配 */
-                reg: '^/mj setting .+ .+$',
+                reg: '^/mj (setting|s) .+ .+$',
                 /** 执行方法 */
                 fnc: 'Setting',
                 /** 主人权限 */

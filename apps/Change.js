@@ -17,7 +17,7 @@ export class Change extends plugin {
             priority: 1009,
             rule: [{
                 /** 命令正则匹配 */
-                reg: '^/mj change [UuVv] [1-4]$',
+                reg: '^/mj (change|c) [UuVv] [1-4]$',
                 /** 执行方法 */
                 fnc: 'Change',
             }],
@@ -67,7 +67,7 @@ export class Change extends plugin {
                 e.reply(`生成图像失败，请查看控制台输出`)
                 return true
             } else {
-                const base64 = await getPic(task)
+                const base64 = await getPic(task.imageUrl)
                 let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(task.finishTime - task.startTime) / 1000}s`], true)
                 if (!resReply) {
                     e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)

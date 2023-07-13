@@ -6,9 +6,9 @@ import Config from '../../components/config/config.js'
  * @param {object} 任务信息
  * @returns
  */
-export async function getPic(task) {
+export async function getPic(imageUrl) {
     let configs = Config.getSetting()
-    const img = await axios.get(task.imageUrl,
+    const img = await axios.get(imageUrl,
         {
             responseType: 'arraybuffer',
             proxy: configs.proxy.host && configs.proxy.port ? {
@@ -18,4 +18,4 @@ export async function getPic(task) {
         }
     )
     return Buffer.from(img.data, 'binary').toString('base64')
-  }
+}

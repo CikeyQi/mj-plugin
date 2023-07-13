@@ -1,7 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import { getPic } from '../components/midjourney/getPic.js'
 import { change } from '../components/midjourney/upChange.js'
 import { parseImg } from '../utils/utils.js'
 import { getResults } from '../utils/task.js'
+
 
 export class Change extends plugin {
     constructor() {
@@ -15,7 +17,7 @@ export class Change extends plugin {
             priority: 1009,
             rule: [{
                 /** 命令正则匹配 */
-                reg: '^/mj change [UuVv] [1-4]$',
+                reg: '^/mj (change|c) [UuVv] [1-4]$',
                 /** 执行方法 */
                 fnc: 'Change',
             }],
@@ -47,7 +49,7 @@ export class Change extends plugin {
         const response = await change(params);
         if (response.data) {
             if (response.data.code == 1) {
-                e.reply(`绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
+                e.reply(`您的绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
             } else if (response.data.code == 21) {
                 e.reply(`该任务已存在，正在为您生成图像......\n任务ID：${response.data.result}`, true)
             } else if (response.data.code == 22) {
@@ -56,7 +58,7 @@ export class Change extends plugin {
                 e.reply(`Midjourney API返回错误：[${response.data.code} ${response.data.description}]`, true)
                 return true
             }
-             // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
+            // 如果是变化任务，需要将任务ID存入redis，用于后续的变化任务
             if (action == 'VARIATION') {
                 await redis.set(`midjourney:taskId:${e.user_id}`, response.data.result, 'EX', 1800)
             }
@@ -65,7 +67,8 @@ export class Change extends plugin {
                 e.reply(`生成图像失败，请查看控制台输出`)
                 return true
             } else {
-                let resReply = await e.reply([{ ...segment.image(task.imageUrl), origin: true }, `任务耗时：${(task.finishTime - task.startTime) / 1000}s`], true)
+                const base64 = await getPic(task.imageUrl)
+                let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(task.finishTime - task.startTime) / 1000}s`], true)
                 if (!resReply) {
                     e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)
                 }

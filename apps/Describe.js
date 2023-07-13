@@ -16,7 +16,7 @@ export class Describe extends plugin {
 			priority: 1009,
 			rule: [{
 				/** 命令正则匹配 */
-				reg: '^/mj describe$',
+				reg: '^/mj (describe|d)$',
 				/** 执行方法 */
 				fnc: 'Describe',
 			}],
@@ -25,6 +25,10 @@ export class Describe extends plugin {
 
 	async Describe(e) {
 		e = await parseImg(e)
+		if (!e.img) {
+			e.reply("未获取到图片", false)
+			return true
+		}
 		let img = await axios.get(e.img[0], {
 			responseType: 'arraybuffer'
 		});
@@ -38,7 +42,7 @@ export class Describe extends plugin {
 		const response = await describe(params);
 		if (response.data) {
 			if (response.data.code == 1) {
-				e.reply(`绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
+				e.reply(`您的绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
 			} else if (response.data.code == 21) {
 				e.reply(`该任务已存在，正在为您生成图像......\n任务ID：${response.data.result}`, true)
 			} else if (response.data.code == 22) {

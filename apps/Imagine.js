@@ -43,7 +43,7 @@ export class Imagine extends plugin {
 		const response = await imagine(params);
 		if (response.data) {
 			if (response.data.code == 1) {
-				e.reply(`绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
+				e.reply(`您的绘图任务已提交成功，正在为您生成图像......\n任务ID：${response.data.result}`, true)
 			} else if (response.data.code == 21) {
 				e.reply(`该任务已存在，请稍后再试`, true)
 			} else if (response.data.code == 22) {

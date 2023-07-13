@@ -25,8 +25,8 @@ export class Describe extends plugin {
 
 	async Describe(e) {
 		e = await parseImg(e)
-		if(!e.img){
-			e.reply("未获取到图片",false)
+		if (!e.img) {
+			e.reply("未获取到图片", false)
 			return true
 		}
 		let img = await axios.get(e.img[0], {

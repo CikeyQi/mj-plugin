@@ -47,12 +47,12 @@ export class Question extends plugin {
         } else {
             e.reply(`Midjourney API返回错误：[${response.data.code} ${response.data.description}]`, true)
         }
-        if (response.data.status == 'SUCCESS'){
+        if (response.data.status == 'SUCCESS') {
             const base64 = await getPic(response.data)
-			let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(response.data.finishTime - response.data.startTime) / 1000}s`], true)
-			if (!resReply) {
-				e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${response.data.imageUrl}`)
-			}
+            let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(response.data.finishTime - response.data.startTime) / 1000}s`], true)
+            if (!resReply) {
+                e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${response.data.imageUrl}`)
+            }
         }
         return true
     }

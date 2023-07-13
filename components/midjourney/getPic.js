@@ -4,6 +4,7 @@ import Config from '../../components/config/config.js'
 /** 
  * 指定图片ID取图片
  * @param {object} 任务信息
+ * @returns
  */
 export async function getPic(task) {
     let configs = Config.getSetting()
@@ -16,6 +17,5 @@ export async function getPic(task) {
             } : undefined
         }
     )
-    let base64 = Buffer.from(img.data, 'binary').toString('base64')
-    return base64
+    return Buffer.from(img.data, 'binary').toString('base64')
   }

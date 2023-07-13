@@ -1,9 +1,9 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import Config from '../components/config/config.js'
-import axios from 'axios'
+import { getPic } from '../components/midjourney/getPic.js'
 import { change } from '../components/midjourney/upChange.js'
 import { parseImg } from '../utils/utils.js'
 import { getResults } from '../utils/task.js'
+
 
 export class Change extends plugin {
     constructor() {
@@ -67,21 +67,11 @@ export class Change extends plugin {
                 e.reply(`生成图像失败，请查看控制台输出`)
                 return true
             } else {
-                let configs = Config.getSetting()
-                const img = await axios.get(task.imageUrl,
-                    {
-                        responseType: 'arraybuffer',
-                        proxy: configs.proxy.host && configs.proxy.port ? {
-                            protocol: 'http',
-                            host: `${configs.proxy.host}`, port: `${Number(configs.proxy.port)}`
-                        } : undefined
-                    }
-                )
-                let base64 = Buffer.from(img.data, 'binary').toString('base64');
-                let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(task.finishTime - task.startTime) / 1000}s`], true)
-                if (!resReply) {
-                    e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)
-                }
+                const base64 = await getPic(task)
+				let resReply = await e.reply([{ ...segment.image(`base64://${base64}`), origin: true }, `任务耗时：${(task.finishTime - task.startTime) / 1000}s`], true)
+				if (!resReply) {
+					e.reply(`发送图像失败，可能是因为图像过大，或无法访问图像链接\n图像链接：${task.imageUrl}`)
+				}
             }
         } else {
             e.reply(`调用Midjourney API失败，请查看控制台输出`)

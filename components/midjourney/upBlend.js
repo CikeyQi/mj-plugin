@@ -2,7 +2,7 @@ import axios from 'axios'
 import Log from '../../utils/logs.js'
 import Config from '../../components/config/config.js'
 
-/** 
+/**
  * 提交Blend任务
  * @param {object} params blendDTO
  * @param {array} params.base64Array 图片base64数组
@@ -11,11 +11,11 @@ import Config from '../../components/config/config.js'
  * @param {string} params.state 自定义参数
  * @returns
  */
-export async function blend(params) {
-    let baseAPI = Config.getAPI()
-    if (!baseAPI) {
-        Log.e('未配置Midjourney API')
-        return false
-    }
-    return await axios.post(baseAPI + '/mj/submit/blend', params)
+export async function blend (params) {
+  const baseAPI = Config.getAPI()
+  if (!baseAPI) {
+    Log.e('未配置Midjourney API')
+    return false
+  }
+  return await axios.post(baseAPI + '/mj/submit/blend', params)
 }

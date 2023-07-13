@@ -2,7 +2,7 @@ import axios from 'axios'
 import Log from '../../utils/logs.js'
 import Config from '../../components/config/config.js'
 
-/** 
+/**
  * 绘图变化-simple
  * @param {object} params simpleChangeDTO
  * @param {string} params.content 变化描述: ID $action$index
@@ -10,11 +10,11 @@ import Config from '../../components/config/config.js'
  * @param {string} params.state 自定义参数
  * @returns
  */
-export async function simpleChange(params) {
-    let baseAPI = Config.getAPI()
-    if (!baseAPI) {
-        Log.e('未配置Midjourney API')
-        return false
-    }
-    return await axios.post(baseAPI + '/mj/submit/simple-change', params)
+export async function simpleChange (params) {
+  const baseAPI = Config.getAPI()
+  if (!baseAPI) {
+    Log.e('未配置Midjourney API')
+    return false
+  }
+  return await axios.post(baseAPI + '/mj/submit/simple-change', params)
 }

@@ -9,9 +9,4 @@ const pluginRoot = path.join(_path, 'plugins', pluginName)
 // 插件资源目录
 const pluginResources = path.join(pluginRoot, 'resources')
 
-export {
-  _path,
-  pluginName,
-  pluginRoot,
-  pluginResources,
-}
+export { _path, pluginName, pluginRoot, pluginResources }

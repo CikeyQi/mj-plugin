@@ -70,13 +70,7 @@ export class Question extends plugin {
         : ''
       const msg = `${description}\n\n[${action}]\n[${status}] [${progress}]\n${failReason}`
       e.reply(msg, true)
-      await redis.set(
-        `midjourney:taskId:${e.user_id}`,
-        taskId,
-        'EX',
-        1800
-      )
-
+      await redis.set(`midjourney:taskId:${e.user_id}`, taskId, 'EX', 1800)
     } else {
       e.reply(
         `Midjourney API返回错误：[${response.data.code} ${response.data.description}]`,

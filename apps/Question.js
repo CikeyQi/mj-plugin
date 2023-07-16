@@ -1,12 +1,12 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import puppeteer from "../../../lib/puppeteer/puppeteer.js";
+import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 import { fetch } from '../components/midjourney/queID.js'
 import { list } from '../components/midjourney/queAll.js'
 import { getPic } from '../components/midjourney/getPic.js'
-import { pluginResources } from '../model/path.js';
+import { pluginResources } from '../model/path.js'
 
 export class Question extends plugin {
-  constructor() {
+  constructor () {
     super({
       /** 功能名称 */
       name: 'MJ-查询',
@@ -32,7 +32,7 @@ export class Question extends plugin {
     })
   }
 
-  async Question(e) {
+  async Question (e) {
     // 判断命令中是否有任务ID
     const reg = /^\/mj (question|q) (\d+)$/
     const match = e.msg.match(reg)
@@ -81,7 +81,8 @@ export class Question extends plugin {
       const resReply = await e.reply(
         [
           { ...segment.image(`base64://${base64}`), origin: true },
-          `任务耗时：${(response.data.finishTime - response.data.startTime) / 1000
+          `任务耗时：${
+            (response.data.finishTime - response.data.startTime) / 1000
           }s`
         ],
         true
@@ -95,10 +96,10 @@ export class Question extends plugin {
     return true
   }
 
-  async QuestionAll(e) {
+  async QuestionAll (e) {
     const response = await list()
     if (response.data) {
-      let model = []
+      const model = []
       for (let i = 0; i < response.data.length; i++) {
         let firstList = ''
         let secondList = ''
@@ -165,32 +166,31 @@ export class Question extends plugin {
             thirdList = response.data[i].description
             break
         }
-        thirdList = thirdList.substring(0, 35) + (thirdList.length > 35 ? '...' : '')
+        thirdList =
+          thirdList.substring(0, 35) + (thirdList.length > 35 ? '...' : '')
         model.push({
-          firstList: firstList,
-          secondList: secondList,
-          thirdList: thirdList,
-          able: able
+          firstList,
+          secondList,
+          thirdList,
+          able
         })
       }
-      const base64 = await puppeteer.screenshot("mj-plugin", {
-        imgType: "png",
-        saveId: "swichModel",
+      const base64 = await puppeteer.screenshot('mj-plugin', {
+        imgType: 'png',
+        saveId: 'swichModel',
         tplFile: `${pluginResources}/taskList/taskList.html`,
-        pluginResources: pluginResources,
-        headerText: "Midjourney任务列表",
-        firstList: "类型",
-        secondList: "状态",
-        thirdList: "任务信息",
-        model: model,
-        sideBarLabel: "默认接口",
-        noticeText: "可以直接使用序号来查看指定任务结果，例如：/mj q 1"
-      });
+        pluginResources,
+        headerText: 'Midjourney任务列表',
+        firstList: '类型',
+        secondList: '状态',
+        thirdList: '任务信息',
+        model,
+        sideBarLabel: '默认接口',
+        noticeText: '可以直接使用序号来查看指定任务结果，例如：/mj q 1'
+      })
       const resReply = await e.reply(base64)
       if (!resReply) {
-        e.reply(
-          `发送图像失败，可能是账号被风控，请查看控制台报错`
-        )
+        e.reply('发送图像失败，可能是账号被风控，请查看控制台报错')
       }
     } else {
       e.reply(

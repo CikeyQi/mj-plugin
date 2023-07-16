@@ -105,7 +105,7 @@ body {
   font-family: "字魂正酷超级黑";
 }
 
-.data_table .row>div {
+.data_table .row > div {
   box-shadow: 0 0 0.5px 0 #555 inset;
   display: table-cell;
   text-align: center;
@@ -114,7 +114,7 @@ body {
   line-height: 30px;
 }
 
-.data_table .row th>div {
+.data_table .row th > div {
   box-shadow: none;
 }
 
@@ -130,7 +130,7 @@ body {
 }
 
 .data_table .row.able_2 {
-  background: rgb(186, 186, 253)
+  background: rgb(186, 186, 253);
 }
 
 .data_table .row.able_3 {

@@ -2,6 +2,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import axios from 'axios'
 import Config from '../components/config/config.js'
 import Log from '../utils/logs.js'
+import Init from '../model/init.js'
 
 export class Setting extends plugin {
   constructor () {
@@ -27,6 +28,8 @@ export class Setting extends plugin {
   }
 
   async Setting (e) {
+    // 初始化
+    Init.initSetting()
     // 取出参数
     const key = e.msg.split(' ')[2]
     let value = e.msg.split(' ')[3]

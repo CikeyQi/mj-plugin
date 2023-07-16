@@ -6,7 +6,7 @@ import { getPic } from '../components/midjourney/getPic.js'
 import { pluginResources } from '../model/path.js'
 
 export class Question extends plugin {
-  constructor() {
+  constructor () {
     super({
       /** 功能名称 */
       name: 'MJ-查询',
@@ -32,7 +32,7 @@ export class Question extends plugin {
     })
   }
 
-  async Question(e) {
+  async Question (e) {
     // 判断命令中是否有任务ID
     const reg = /^\/mj (question|q) (\d+)$/
     const match = e.msg.match(reg)
@@ -61,14 +61,18 @@ export class Question extends plugin {
     if (response.data) {
       const action = response.data.action
       const status = response.data.status
-      const progress = response.data.progress ? response.data.progress : "无进度信息"
+      const progress = response.data.progress
+        ? response.data.progress
+        : '无进度信息'
       const description = response.data.description
         ? response.data.description
         : ''
       const failReason = response.data.failReason
         ? response.data.failReason
         : ''
-      const msg = `信息：${description}\n类型：${action}\n状态：${status}${failReason ? '' : ` ${progress}`}${failReason ? `\n失败原因：${failReason}` : ''}`
+      const msg = `信息：${description}\n类型：${action}\n状态：${status}${
+        failReason ? '' : ` ${progress}`
+      }${failReason ? `\n失败原因：${failReason}` : ''}`
       e.reply(msg, true)
       await redis.set(`midjourney:taskId:${e.user_id}`, taskId, 'EX', 1800)
     } else {
@@ -82,7 +86,8 @@ export class Question extends plugin {
       const resReply = await e.reply(
         [
           { ...segment.image(`base64://${base64}`), origin: true },
-          `任务耗时：${(response.data.finishTime - response.data.startTime) / 1000
+          `任务耗时：${
+            (response.data.finishTime - response.data.startTime) / 1000
           }s`
         ],
         true
@@ -96,7 +101,7 @@ export class Question extends plugin {
     return true
   }
 
-  async QuestionAll(e) {
+  async QuestionAll (e) {
     const response = await list()
     if (response.data) {
       const model = []

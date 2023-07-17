@@ -37,7 +37,7 @@ export class Setting extends plugin {
     // 读取配置
     const settings = await Config.getSetting()
     // 判断是否存在
-    if (!settings[key]) {
+    if (!(key in settings)) {
       e.reply(`配置项${key}不存在`)
       return true
     } else {
@@ -55,7 +55,7 @@ export class Setting extends plugin {
             e.reply(`配置项${key}已修改为${value}`)
             return true
           }
-        } catch (e) {
+        } catch (err) {
           e.reply(
             `配置项${key}修改失败，测试接口连通性失败，请检查配置是否正确`
           )

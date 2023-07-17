@@ -1,12 +1,13 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import axios from 'axios'
+import Config from '../components/config/config.js'
 import { getPic } from '../components/midjourney/getPic.js'
 import { imagine } from '../components/midjourney/upImagine.js'
 import { parseImg } from '../utils/utils.js'
 import { getResults } from '../utils/task.js'
 
 export class Imagine extends plugin {
-  constructor () {
+  constructor() {
     super({
       /** 功能名称 */
       name: 'MJ-想象',
@@ -26,7 +27,9 @@ export class Imagine extends plugin {
     })
   }
 
-  async Imagine (e) {
+  async Imagine(e) {
+    if (await this.isAvailable(e))
+      return true
     e = await parseImg(e)
     let base64 = ''
     if (e.img) {
@@ -57,16 +60,17 @@ export class Imagine extends plugin {
           `Midjourney API返回错误：[${response.data.code} ${response.data.description}]`,
           true
         )
+        this.clearCoolTime(e)
       }
       redis.set(
         `midjourney:taskId:${e.user_id}`,
         response.data.result,
-        'EX',
-        1800
+        { EX: 1800 }
       )
       const task = await getResults(response.data.result)
       if (!task) {
         e.reply('生成图像失败，请查看控制台输出')
+        this.clearCoolTime(e)
         return true
       } else {
         const base64 = await getPic(task.imageUrl)
@@ -87,5 +91,68 @@ export class Imagine extends plugin {
       e.reply('调用Midjourney API失败，请查看控制台输出')
     }
     return true
+  }
+  /**查看是否可画
+   * @param {object} e 消息
+   * @returns {boolean} 可是否画
+   */
+  async isAvailable(e) {
+    // 判断主人
+    if (e.isMaster) {
+      return false
+    }
+    const record = {
+      msg: e.msg,
+      img: e.img || null,
+      messageTime: e.time,
+    }
+    // 是否在群聊中
+    if (e.message_type === "group") {
+      // 获取当前群策略
+      let currentGroupPolicy = Config.getGroupPolicy(e.group_id)
+      // 查询是否在CD中
+      let personRecord = JSON.parse(await redis.get(`MJPersonRecord:${e.group_id}:${e.user_id}`))
+      let groupRecord = JSON.parse(await redis.get(`MJGroupRecord:${e.group_id}`))
+      if (!personRecord && !groupRecord) {
+        // 写入个人CD
+        redis.set(`MJPersonRecord:${e.group_id}:${e.user_id}`, JSON.stringify(record), { EX: currentGroupPolicy.person_cool_time })
+        // 写入群共享CD
+        redis.set(`MJGroupRecord:${e.group_id}`, JSON.stringify(record), { EX: currentGroupPolicy.group_cool_time })
+      } else {
+        let msg = [
+          personRecord ? "您还需" + `${personRecord.messageTime + currentGroupPolicy.person_cool_time - e.time}秒` + "才能画噢" :
+            groupRecord ? "当前群还需" + `${groupRecord.messageTime + currentGroupPolicy.group_cool_time - e.time}秒` + "才能画噢" : "查询CD失败"
+        ]
+        e.reply(msg, true)
+        return true
+      }
+    } else {
+      // 获取私聊策略
+      let currentPrivatePolicy = Config.getPolicy()
+      let privateRecord = JSON.parse(await redis.get(`MJPrivateRecord:${e.user_id}`))
+      if (!privateRecord) {
+        redis.set(`MJPrivateRecord:${e.user_id}`, JSON.stringify(record), { EX: currentPrivatePolicy.private_cool_time })
+      } else {
+        let msg = [privateRecord ? "您还需" + `${privateRecord.messageTime + currentPrivatePolicy.private_cool_time - e.time}秒` + "才能画噢" : "查询CD失败"]
+        e.reply(msg, true)
+        return true
+      }
+    }
+    return false
+  }
+
+  /**清空当前用户以及群CD
+   * @param {object} e 消息
+   */
+  async clearCoolTime(e) {
+    // 是否在群聊中
+    if (e.message_type === "group") {
+      redis.del(`MJPersonRecord:${e.group_id}:${e.user_id}`)
+      redis.del(`MJGroupRecord:${e.group_id}`)
+      return true
+    } else {
+      redis.del(`MJPrivateRecord:${e.user_id}`)
+      return true
+    }
   }
 }

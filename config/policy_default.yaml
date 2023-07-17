@@ -1,0 +1,5 @@
+private_cool_time: 1
+group_property:
+  global:
+    group_cool_time: 1
+    person_cool_time: 1

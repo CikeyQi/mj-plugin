@@ -19,7 +19,7 @@ export class Imagine extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^/mj (imagine|i) .*$',
+          reg: '^(/mj (imagine|i) |#想象).*$',
           /** 执行方法 */
           fnc: 'Imagine'
         }
@@ -28,7 +28,11 @@ export class Imagine extends plugin {
   }
 
   async Imagine(e) {
-    if (await this.isAvailable(e))
+    // 是否在黑名单中
+    if (await this.isBanned(e))
+      return true
+    // 是否冷却中
+    if (await this.isCoolTime(e))
       return true
     e = await parseImg(e)
     let base64 = ''
@@ -40,7 +44,7 @@ export class Imagine extends plugin {
     }
     const params = {
       base64: e.img ? 'data:image/png;base64,' + base64 : '',
-      prompt: e.msg.replace(/^\/mj (imagine|i) /, ''),
+      prompt: e.msg.replace(/^(\/mj (imagine|i) |#想象)/, ''),
       notifyHook: '',
       state: ''
     }
@@ -92,11 +96,11 @@ export class Imagine extends plugin {
     }
     return true
   }
-  /**查看是否可画
+  /**查看是否在CD中
    * @param {object} e 消息
-   * @returns {boolean} 可是否画
+   * @returns {boolean} 是否在冷却中
    */
-  async isAvailable(e) {
+  async isCoolTime(e) {
     // 判断主人
     if (e.isMaster) {
       return false
@@ -109,7 +113,7 @@ export class Imagine extends plugin {
     // 是否在群聊中
     if (e.message_type === "group") {
       // 获取当前群策略
-      let currentGroupPolicy = Config.getGroupPolicy(e.group_id)
+      const currentGroupPolicy = Config.getGroupPolicy(e.group_id)
       // 查询是否在CD中
       let personRecord = JSON.parse(await redis.get(`MJPersonRecord:${e.group_id}:${e.user_id}`))
       let groupRecord = JSON.parse(await redis.get(`MJGroupRecord:${e.group_id}`))
@@ -154,5 +158,25 @@ export class Imagine extends plugin {
       redis.del(`MJPrivateRecord:${e.user_id}`)
       return true
     }
+  }
+
+  /**判断用户或群是否在黑名单中
+   * @param {object} e 消息
+   * @return {boolean} 是否在黑名单中
+   */
+  async isBanned(e) {
+    const policy = await Config.getPolicy()
+    // 是否在群聊中
+    if (e.message_type === "group") {
+      if (policy.black_group.indexOf(e.group_id) !== -1) {
+        e.reply("当前群已被禁止画图")
+        return true
+      }
+    }
+    if (policy.black_user.indexOf(e.user_id) !== -1) {
+      e.reply("你已被主人禁止画图")
+      return true
+    }
+    return false
   }
 }

@@ -1,0 +1,13 @@
+# 私聊的CD
+private_cool_time: 1 
+# 黑名单用户
+black_user: [] 
+# 黑名单群
+black_group: [] 
+# 群属性
+group_property:
+  global:
+    # 群共享CD
+    group_cool_time: 1 
+    # 群用户CD
+    person_cool_time: 1 

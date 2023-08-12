@@ -5,7 +5,7 @@ import Log from '../utils/logs.js'
 import Init from '../model/init.js'
 
 export class Setting extends plugin {
-  constructor() {
+  constructor () {
     super({
       /** 功能名称 */
       name: 'MJ-设置',
@@ -27,7 +27,7 @@ export class Setting extends plugin {
     })
   }
 
-  async Setting(e) {
+  async Setting (e) {
     // 初始化
     Init.initSetting()
     // 读取配置
@@ -37,7 +37,7 @@ export class Setting extends plugin {
     const key = regParam[1]
     let value = regParam[2]
     if (!key) {
-      e.reply(`配置项不存在,请检查输入`)
+      e.reply('配置项不存在,请检查输入')
       return true
     }
     // 修改标志位,修改成功后修改为true
@@ -52,13 +52,11 @@ export class Setting extends plugin {
           const response = await axios.get(`${value}/mj/task/list`)
           // 如果是200，说明接口正常
           if (response.status == 200) {
-            settings['midjourney_proxy_api'] = value
+            settings.midjourney_proxy_api = value
             alterFlag = true
           }
         } catch (e) {
-          e.reply(
-            `配置项代理修改失败，测试接口连通性失败，请检查配置是否正确`
-          )
+          e.reply('配置项代理修改失败，测试接口连通性失败，请检查配置是否正确')
           return true
         }
         break

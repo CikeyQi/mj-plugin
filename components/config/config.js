@@ -4,7 +4,7 @@ import { pluginRoot } from '../../model/path.js'
 import Log from '../../utils/logs.js'
 
 class Config {
-  getAPI() {
+  getAPI () {
     try {
       const setting_data = this.getSetting()
       return setting_data.midjourney_proxy_api
@@ -14,7 +14,7 @@ class Config {
     }
   }
 
-  getSetting() {
+  getSetting () {
     try {
       const setting_yaml = YAML.parse(
         fs.readFileSync(`${pluginRoot}/config/config/setting.yaml`, 'utf-8')
@@ -26,7 +26,7 @@ class Config {
     }
   }
 
-  getDefSetting() {
+  getDefSetting () {
     try {
       const setting_default_yaml = YAML.parse(
         fs.readFileSync(`${pluginRoot}/config/setting_default.yaml`, 'utf-8')
@@ -38,7 +38,7 @@ class Config {
     }
   }
 
-  setSetting(setting_data) {
+  setSetting (setting_data) {
     try {
       fs.writeFileSync(
         `${pluginRoot}/config/config/setting.yaml`,
@@ -51,7 +51,7 @@ class Config {
     }
   }
 
-  getPolicy() {
+  getPolicy () {
     try {
       const policy_yaml = YAML.parse(
         fs.readFileSync(`${pluginRoot}/config/config/policy.yaml`, 'utf-8')
@@ -63,7 +63,7 @@ class Config {
     }
   }
 
-  getDefPolicy() {
+  getDefPolicy () {
     try {
       const policy_default_yaml = YAML.parse(
         fs.readFileSync(`${pluginRoot}/config/policy_default.yaml`, 'utf-8')
@@ -75,10 +75,11 @@ class Config {
     }
   }
 
-  setPolicy(policy_data) {
+  setPolicy (policy_data) {
     try {
       fs.writeFileSync(
-        `${pluginRoot}/config/config/policy.yaml`, YAML.stringify(policy_data)
+        `${pluginRoot}/config/config/policy.yaml`,
+        YAML.stringify(policy_data)
       )
       return true
     } catch (err) {
@@ -87,15 +88,17 @@ class Config {
     }
   }
 
-  /** 
+  /**
    * @param {number} 群号
    * @returns {object} 群聊策略
    */
-  getGroupPolicy(groupID) {
-    let policy = this.getPolicy()
-    let currentGroupPolicy = {}
-    for (let key in policy.group_property['global']) {
-      currentGroupPolicy[key] = policy.group_property[groupID][key] || policy.group_property['global'][key]
+  getGroupPolicy (groupID) {
+    const policy = this.getPolicy()
+    const currentGroupPolicy = {}
+    for (const key in policy.group_property.global) {
+      currentGroupPolicy[key] =
+        policy.group_property[groupID][key] ||
+        policy.group_property.global[key]
     }
     return currentGroupPolicy
   }

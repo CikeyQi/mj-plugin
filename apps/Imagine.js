@@ -19,7 +19,7 @@ export class Imagine extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^(/mj (imagine|i) |#想象).*$',
+          reg: '^#想象.*$',
           /** 执行方法 */
           fnc: 'Imagine'
         }
@@ -44,7 +44,7 @@ export class Imagine extends plugin {
     }
     const params = {
       base64: e.img ? 'data:image/png;base64,' + base64 : '',
-      prompt: e.msg.replace(/^(\/mj (imagine|i) |#想象)/, ''),
+      prompt: e.msg.replace(/^#想象/, ''),
       notifyHook: '',
       state: ''
     }
@@ -98,7 +98,7 @@ export class Imagine extends plugin {
   }
   /**查看是否在CD中
    * @param {object} e 消息
-   * @returns {boolean} 是否在冷却中
+   * @returns {boolean} 是否在冷却中,冷却中为true
    */
   async isCoolTime(e) {
     // 判断主人
@@ -114,14 +114,16 @@ export class Imagine extends plugin {
     if (e.message_type === "group") {
       // 获取当前群策略
       const currentGroupPolicy = Config.getGroupPolicy(e.group_id)
+      // 判断CD开关是否开启
+      if (!currentGroupPolicy.group_cool_time_switch) return false
       // 查询是否在CD中
-      let personRecord = JSON.parse(await redis.get(`MJPersonRecord:${e.group_id}:${e.user_id}`))
-      let groupRecord = JSON.parse(await redis.get(`MJGroupRecord:${e.group_id}`))
+      let personRecord = JSON.parse(await redis.get(`MJ:PersonRecord:${e.group_id}:${e.user_id}`))
+      let groupRecord = JSON.parse(await redis.get(`MJ:GroupRecord:${e.group_id}`))
       if (!personRecord && !groupRecord) {
         // 写入个人CD
-        redis.set(`MJPersonRecord:${e.group_id}:${e.user_id}`, JSON.stringify(record), { EX: currentGroupPolicy.person_cool_time })
+        redis.set(`MJ:PersonRecord:${e.group_id}:${e.user_id}`, JSON.stringify(record), { EX: currentGroupPolicy.person_cool_time })
         // 写入群共享CD
-        redis.set(`MJGroupRecord:${e.group_id}`, JSON.stringify(record), { EX: currentGroupPolicy.group_cool_time })
+        redis.set(`MJ:GroupRecord:${e.group_id}`, JSON.stringify(record), { EX: currentGroupPolicy.group_cool_time })
       } else {
         let msg = [
           personRecord ? "您还需" + `${personRecord.messageTime + currentGroupPolicy.person_cool_time - e.time}秒` + "才能画噢" :
@@ -133,9 +135,10 @@ export class Imagine extends plugin {
     } else {
       // 获取私聊策略
       let currentPrivatePolicy = Config.getPolicy()
-      let privateRecord = JSON.parse(await redis.get(`MJPrivateRecord:${e.user_id}`))
+      if (!currentPrivatePolicy.private_cool_time_switch) return false
+      let privateRecord = JSON.parse(await redis.get(`MJ:PrivateRecord:${e.user_id}`))
       if (!privateRecord) {
-        redis.set(`MJPrivateRecord:${e.user_id}`, JSON.stringify(record), { EX: currentPrivatePolicy.private_cool_time })
+        redis.set(`MJ:PrivateRecord:${e.user_id}`, JSON.stringify(record), { EX: currentPrivatePolicy.private_cool_time })
       } else {
         let msg = [privateRecord ? "您还需" + `${privateRecord.messageTime + currentPrivatePolicy.private_cool_time - e.time}秒` + "才能画噢" : "查询CD失败"]
         e.reply(msg, true)
@@ -151,11 +154,11 @@ export class Imagine extends plugin {
   async clearCoolTime(e) {
     // 是否在群聊中
     if (e.message_type === "group") {
-      redis.del(`MJPersonRecord:${e.group_id}:${e.user_id}`)
-      redis.del(`MJGroupRecord:${e.group_id}`)
+      redis.del(`MJ:PersonRecord:${e.group_id}:${e.user_id}`)
+      redis.del(`MJ:GroupRecord:${e.group_id}`)
       return true
     } else {
-      redis.del(`MJPrivateRecord:${e.user_id}`)
+      redis.del(`MJ:PrivateRecord:${e.user_id}`)
       return true
     }
   }

@@ -3,3 +3,4 @@ shield: false
 proxy:
   host: null
   port: null
+  switch: false

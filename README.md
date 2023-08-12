@@ -83,11 +83,13 @@ pnpm restart
 
 [点击配置midjourney-proxy](https://github.com/novicezk/midjourney-proxy/blob/main/docs/zeabur-start.md)
 
-配置好API服务端后，对机器人使用命令 `/mj setting midjourney_proxy_api 你的API的Host`
+配置好API服务端后，对机器人使用命令 `#mj设置接口`
 
-示例：`/mj setting midjourney_proxy_api https://midjourney-proxy.zeabur.app`
+示例：`#mj设置接口https://midjourney-proxy.zeabur.app`
 
-**如果你是公域机器人**：`/mj setting shield true` 即可屏蔽艾特
+**如果你是公域机器人**：`#mj屏蔽艾特开启` 即可屏蔽艾特
+
+使用方法：对机器人使用命令 `#mj帮助`
 
 <br><br>
 
@@ -95,7 +97,7 @@ pnpm restart
 
 ### Midjourney Imgine 想象
 
-指令：`/mj imagine [prompt]` 可带图
+指令：`#想象` 可带图
 
 <p>
   </a>
@@ -105,7 +107,7 @@ pnpm restart
 
 ### Midjourney Upscale 放大
 
-指令：`/mj change U [图片序号1-4]`
+指令：`#放大[图片序号1-4]`
 
 <p>
   </a>
@@ -115,7 +117,7 @@ pnpm restart
 
 ### Midjourney Variation 变幻
 
-指令：`/mj change V [图片序号1-4]`
+指令：`#变幻[图片序号1-4]`
 
 <p>
   </a>
@@ -125,7 +127,7 @@ pnpm restart
 
 ### Midjourney Describe 识图
 
-指令：`/mj describe` 带上图
+指令：`#描述` 带上图
 
 <p>
   </a>

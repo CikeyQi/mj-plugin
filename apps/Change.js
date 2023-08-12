@@ -17,7 +17,7 @@ export class Change extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^(/mj (change|c) [UuVv] |#(放大|取出|变(换|化|幻)))[1-4]$',
+          reg: '^#(放大|取出|变(换|化|幻))[1-4]$',
           /** 执行方法 */
           fnc: 'Change'
         }
@@ -32,13 +32,6 @@ export class Change extends plugin {
       action = 'UPSCALE'
     } else if (e.msg.match(/变(换|幻|化)/)) {
       action = 'VARIATION'
-    } else {
-      const type = e.msg.split(' ')[2].toLowerCase()
-      if (type == 'u') {
-        action = 'UPSCALE'
-      } else if (type == 'v') {
-        action = 'VARIATION'
-      }
     }
     const index = Number(e.msg.match(/[1-4]/)[0])
     const taskId = await redis.get(`midjourney:taskId:${e.user_id}`)

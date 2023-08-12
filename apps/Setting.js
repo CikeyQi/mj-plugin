@@ -5,7 +5,7 @@ import Log from '../utils/logs.js'
 import Init from '../model/init.js'
 
 export class Setting extends plugin {
-  constructor () {
+  constructor() {
     super({
       /** 功能名称 */
       name: 'MJ-设置',
@@ -17,7 +17,7 @@ export class Setting extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^/mj (setting|s) .+ .+$',
+          reg: '^#mj设置.+$',
           /** 执行方法 */
           fnc: 'Setting',
           /** 主人权限 */
@@ -27,22 +27,24 @@ export class Setting extends plugin {
     })
   }
 
-  async Setting (e) {
+  async Setting(e) {
     // 初始化
     Init.initSetting()
-    // 取出参数
-    const key = e.msg.split(' ')[2]
-    let value = e.msg.split(' ')[3]
-    Log.i('更新配置项', key, value)
     // 读取配置
     const settings = await Config.getSetting()
-    // 判断是否存在
-    if (!(key in settings)) {
-      e.reply(`配置项${key}不存在`)
+    // 取出参数
+    const regParam = /(接口|代理)(.+)/g.exec(e.msg)
+    const key = regParam[1]
+    let value = regParam[2]
+    if (!key) {
+      e.reply(`配置项不存在,请检查输入`)
       return true
-    } else {
-      // 如果是midjourney_proxy_api，判断是否能够请求/mj/task/list
-      if (key === 'midjourney_proxy_api') {
+    }
+    // 修改标志位,修改成功后修改为true
+    let alterFlag = false
+    switch (key) {
+      // mj设置接口
+      case '接口':
         if (value.endsWith('/')) {
           value = value.substring(0, value.length - 1)
         }
@@ -50,41 +52,48 @@ export class Setting extends plugin {
           const response = await axios.get(`${value}/mj/task/list`)
           // 如果是200，说明接口正常
           if (response.status == 200) {
-            settings[key] = value
-            Config.setSetting(settings)
-            e.reply(`配置项${key}已修改为${value}`)
-            return true
+            settings['midjourney_proxy_api'] = value
+            alterFlag = true
           }
-        } catch (err) {
+        } catch (e) {
           e.reply(
-            `配置项${key}修改失败，测试接口连通性失败，请检查配置是否正确`
+            `配置项代理修改失败，测试接口连通性失败，请检查配置是否正确`
           )
           return true
         }
-      } else if (key === 'proxy') {
-        const pattern =
-          /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):[0-9]{1,5}$/
-        if (!pattern.test(value)) {
-          e.reply('请输入正确的ip地址,格式为127.0.0.1:7890', false)
-          return false
-        } else {
-          settings[key].host = value.split(':')[0]
-          settings[key].port = value.split(':')[1]
-          Config.setSetting(settings)
-          e.reply(`配置项${key}已修改为${value}`)
-          return true
+        break
+      // mj设置代理
+      case '代理':
+        // mj设置代理地址
+        if (value.match(/[0-9.:]{9,21}/)) {
+          const pattern =
+            /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):[0-9]{1,5}$/
+          if (!pattern.test(value)) {
+            e.reply('请输入正确的ip地址,格式为127.0.0.1:7890', false)
+          } else {
+            [settings.proxy.host, settings.proxy.port] = value.split(':')
+            alterFlag = true
+          }
         }
-      } else {
-        if (value == 'true') {
-          value = true
-        } else if (value == 'false') {
-          value = false
+        // mj设置代理开关
+        if (value.match(/(开启|关闭)/)) {
+          if (value === '开启') {
+            settings.proxy.switch = true
+            alterFlag = true
+          } else if (value === '关闭') {
+            settings.proxy.switch = false
+            alterFlag = true
+          }
         }
-        settings[key] = value
-        Config.setSetting(settings)
-        e.reply(`配置项${key}已修改为${value}`)
-        return true
-      }
+        break
     }
+    if (alterFlag) {
+      Config.setSetting(settings)
+      e.reply(`配置项${key}已修改为${value}`)
+      Log.i('更新配置项', key, value)
+    } else {
+      e.reply(`配置项${key}无法修改为${value}`)
+    }
+    return true
   }
 }

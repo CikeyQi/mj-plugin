@@ -13,21 +13,21 @@ export class Setting extends plugin {
             /** 优先级，数字越小等级越高 */
             priority: 1009,
             rule: [{
-                reg: '^(#mj|/mj )(全局)?群聊(\\d{5,11})?(共享|个人)(setting|设置) ?(cd|CD) ?((\\d{1,5})|关闭)$',
+                reg: '^#mj(全局)?群聊(\\d{5,11})?设置(共享|个人)(cd|CD|冷却)(\\d{1,5}|关闭|开启)$',
                 fnc: 'setGroupCoolTime',
                 permission: 'master',
             }, {
-                reg: '^(#mj|/mj )私聊(setting|设置) ?(cd|CD) ?((\\d{1,5})|关闭)$',
+                reg: '^#mj私聊设置(cd|CD|冷却)(\\d{1,5}|关闭|开启)$',
                 fnc: 'setPrivateCoolTime',
                 permission: 'master',
             },
             {
-                reg: '^(#mj解?封禁?|/mj (un)?ban)群 ?(\\d{5,11})?$',
+                reg: '^#mj解?封禁?本?群(\\d{5,11})?$',
                 fnc: 'setBlackGroup',
                 permission: 'master',
             },
             {
-                reg: '^(#mj((解除)?拉黑|解黑)|/mj (un)?ban)[\s\S]*$',
+                reg: '^#mj((解除)?拉黑|解黑)[\s\S]*$',
                 fnc: 'setBlackUser',
                 permission: 'master',
             }
@@ -36,28 +36,30 @@ export class Setting extends plugin {
     }
     // 设置群聊冷却时间,当前群未设置时使用全局冷却时间
     async setGroupCoolTime(e) {
-        let globalGroupReg = /^(#mj|\/mj )全局群聊共享(setting|设置) ?(cd|CD) ?(\d{1,5}|关闭)$/i
-        let globalPersonReg = /^(#mj|\/mj )全局群聊个人(setting|设置) ?(cd|CD) ?(\d{1,5}|关闭)$/i
-        let currentGroupReg = /^(#mj|\/mj )群聊(\d{5,11})?共享(setting|设置) ?(cd|CD) ?(\d{1,5}|关闭)$/i
-        let currentPersonReg = /^(#mj|\/mj )群聊(\d{5,11})?个人(setting|设置) ?(cd|CD) ?(\d{1,5}|关闭)$/i
-        let [globalGroupCoolTime, globalPersonCoolTime, currentGroupCoolTime, currentPersonCoolTime] = [
+        const globalGroupReg = /^#mj全局群聊设置共享(cd|冷却)\d{1,5}$/i
+        const globalPersonReg = /^#mj全局群聊设置个人(cd|冷却)\d{1,5}$/i
+        const currentGroupReg = /^#mj群聊(\d{5,11})?设置共享(cd|冷却)\d{1,5}$/i
+        const currentPersonReg = /^#mj群聊(\d{5,11})?设置个人(cd|冷却)\d{1,5}$/i
+        const switchGroupReg = /#mj(全局|群聊(\d{5,11})?).*(共享).*(关闭|开启)/i
+        const switchPersonReg = /#mj(全局|群聊(\d{5,11})?).*(个人).*(关闭|开启)/i
+        const [globalGroupCoolTime, globalPersonCoolTime, currentGroupCoolTime, currentPersonCoolTime, switchGroupCoolTime, switchPersonCoolTime] = [
             globalGroupReg.exec(e.msg),
             globalPersonReg.exec(e.msg),
             currentGroupReg.exec(e.msg),
-            currentPersonReg.exec(e.msg)
+            currentPersonReg.exec(e.msg),
+            switchGroupReg.exec(e.msg),
+            switchPersonReg.exec(e.msg)
         ]
         // 未指定群则为当前群
-        let groupID = e.msg.match(/群聊(\d{5,11})?/)[1] || e.group_id
+        let groupID = e.msg.match(/全局/) ? 'global' : undefined || e.msg.match(/群聊(\d{5,11})?/)[1] || e.group_id
         // 获取时长,关闭全局CD时为1
-        let CoolTime = e.msg.match(/(cd|CD) ?(\d{1,5}|关闭)/)[2] || 1
-        if (CoolTime === "关闭")
-            CoolTime = 1
-        // cd时长
+        let CoolTime = isNaN(/(cd|冷却)(.*)/i.exec(e.msg)[2]) ? undefined : /(cd|冷却)(.*)/i.exec(e.msg)[2] || 60
+        // CD时长
         if (globalGroupCoolTime) {
-            this.setGroupPolicy('global', 'group_cool_time', Number(CoolTime))
+            this.setGroupPolicy(groupID, 'group_cool_time', Number(CoolTime))
         }
         if (globalPersonCoolTime) {
-            this.setGroupPolicy('global', 'person_cool_time', Number(CoolTime))
+            this.setGroupPolicy(groupID, 'person_cool_time', Number(CoolTime))
         }
         if (currentGroupCoolTime) {
             this.setGroupPolicy(groupID, 'group_cool_time', Number(CoolTime))
@@ -65,36 +67,42 @@ export class Setting extends plugin {
         if (currentPersonCoolTime) {
             this.setGroupPolicy(groupID, 'person_cool_time', Number(CoolTime))
         }
+        if (switchGroupCoolTime) {
+            this.setGroupPolicy(groupID, 'group_cool_time_switch', switchGroupCoolTime[4] === '开启' ? true : false)
+        }
+        if (switchPersonCoolTime) {
+            this.setGroupPolicy(groupID, 'person_cool_time_switch', switchPersonCoolTime[4] === '开启' ? true : false)
+        }
         return true
     }
     // 设置私聊冷却时间
     async setPrivateCoolTime(e) {
-        let privateReg = /^(#mj|\/mj )私聊(setting|设置) ?(cd|CD) ?(\d{1,5}|关闭)$/i
-        let privateCoolTime = privateReg.exec(e.msg)
-        let CoolTime = e.msg.match(/(\d{1,5}|关闭)/)[1] || 1
-        Log.e(CoolTime)
-        if (CoolTime === "关闭")
-            CoolTime = 1
+        let privateReg = /^#mj私聊设置(cd|冷却)(\d{1,5})$/i
+        let switchReg = /(关闭|开启)/
+        let [privateCoolTime, switchCoolTime] = [
+            privateReg.exec(e.msg),
+            switchReg.exec(e.msg)
+        ]
+        let CoolTime = isNaN(/(cd|冷却)(.*)/i.exec(e.msg)[2]) ? undefined : /(cd|冷却)(.*)/i.exec(e.msg)[2] || 60
+        // 设置私聊CD
         if (privateCoolTime) {
             this.setPrivatePolicy('private_cool_time', Number(CoolTime))
+        }
+        if (switchCoolTime) {
+            this.setPrivatePolicy('private_cool_time_switch', switchCoolTime[1] === '开启' ? true : false)
         }
         return true
     }
     // 设置群黑名单
     async setBlackGroup(e) {
-        let setBlackReg = /^(#mj封禁?|\/mj ban)群 ?(\d{5,11})?$/i
-        let unsetBlackReg = /^(#mj解封|\/mj unban)群 ?(\d{5,11})?$/i
+        let setBlackReg = /^#mj封禁?群\d{5,11}?$/i
+        let unsetBlackReg = /^#mj解封群\d{5,11}?$/i
         let [setBlack, unsetBlack] = [
             setBlackReg.exec(e.msg),
             unsetBlackReg.exec(e.msg)
         ]
         // 获取群号
-        let groupNumber = null
-        if (e.msg.match(/\d{5,11}/)) {
-            groupNumber = Number(e.msg.match(/\d{5,11}/))
-        } else {
-            groupNumber = e.group_id
-        }
+        let groupNumber = e.msg.match(/(\d{5,11})/)[1] || e.group_id
         // 判断是拉黑
         if (setBlack) {
             this.setBlackList('black_group', groupNumber, true)
@@ -107,19 +115,15 @@ export class Setting extends plugin {
     }
     // 设置用户黑名单
     async setBlackUser(e) {
-        let setBlackReg = /^(#mj拉黑|\/mj ban)( \d{5,11})?$/i
-        let unsetBlackReg = /^(#mj解(除拉)?黑|\/mj unban)( \d{5,11})?$/i
+        let setBlackReg = /^#mj拉黑\d{5,11}$/i
+        let unsetBlackReg = /^#mj解(除拉)?黑\d{5,11}$/i
         let [setBlack, unsetBlack] = [
             setBlackReg.exec(e.msg),
             unsetBlackReg.exec(e.msg)
         ]
         // 获取QQ号
-        let qqNumber = null
-        if (e.at) {
-            qqNumber = e.at
-        } else if (e.msg.match(/\d{5,11}/)) {
-            qqNumber = Number(e.msg.match(/\d{5,11}/))
-        } else {
+        let qqNumber = e.at || e.msg.match(/(\d{5,11})/)[1]
+        if (qqNumber) {
             e.reply("请检查是否输入正确的QQ号")
             return true
         }
@@ -149,30 +153,29 @@ export class Setting extends plugin {
             if (!policy.group_property[groupID])
                 policy.group_property[groupID] = {}
             policy.group_property[groupID][key] = value
-            // 当设置的群属性与全局属性相同则删除当前该属性
-            if (policy.group_property[groupID][key] === policy.group_property['global'][key])
-                delete policy.group_property[groupID][key]
         }
         // 写入
         try {
             await Config.setPolicy(policy)
             // 回复
-            let gname = '未知群聊'
+            let groupName = '未知群聊'
             if (groupID != "global") {
                 try {
-                    let ginfo = await Bot.getGroupInfo(Number(groupID))
-                    gname = ginfo ? ginfo.group_name : '未知群聊'
+                    let groupInfo = await Bot.getGroupInfo(Number(groupID))
+                    groupName = groupInfo ? groupInfo.group_name : '未知群聊'
                 } catch (err) {
                     Log.e(err)
                 }
             }
             let msg = [
-                groupID == 'global' ? "全部群" : groupID == this.e.group_id ? "本群的" : `群[${gname}](${groupID})的`,
-                key == 'group_cool_time' ? "共享cd"
-                    : key == 'person_cool_time' ? "个人cd"
+                groupID === 'global' ? "全部群" : groupID === this.e.group_id ? "本群的" : `群[${groupName}](${groupID})的`,
+                key === 'group_cool_time' || key === 'group_cool_time_switch' ? "共享cd"
+                    : key === 'person_cool_time' || key === 'person_cool_time_switch' ? "个人cd"
                         : '???',
-                `已设为`,
-                (key == 'group_cool_time' || key == 'person_cool_time') ? (value == 1) ? '关闭' : `${value}秒` : '???'
+                `已`,
+                (key === 'group_cool_time' || key === 'person_cool_time') ? `设为${value}秒`
+                    : (key === 'group_cool_time_switch' || key === 'person_cool_time_switch') ? value ? '开启' : '关闭'
+                        : '???'
             ]
             this.e.reply(msg, true)
         } catch (err) {
@@ -192,7 +195,14 @@ export class Setting extends plugin {
         policy[key] = value
         try {
             await Config.setPolicy(policy)
-            let msg = ['私聊', key == 'private_cool_time' ? '冷却时间' : '???', '已设置为', (key == 'private_cool_time') ? (value == 1) ? '关闭' : `${value}秒` : '???']
+            let msg = ['私聊',
+                key === 'private_cool_time' || key === 'private_cool_time_switch' ? '冷却时间'
+                    : '???',
+                '已',
+                key === 'private_cool_time' ? `设置为${value}秒` :
+                    key === 'private_cool_time_switch' ? value ? '开启' : '关闭'
+                        : '???'
+            ]
             this.e.reply(msg, true)
         } catch (err) {
             Log.e(err)

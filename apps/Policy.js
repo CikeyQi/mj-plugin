@@ -27,7 +27,7 @@ export class Setting extends plugin {
                 permission: 'master',
             },
             {
-                reg: '^#mj((解除)?拉黑|解黑)[\s\S]*$',
+                reg: '^#mj((解除)?拉黑|解黑)([\\s\\S]*)$',
                 fnc: 'setBlackUser',
                 permission: 'master',
             }
@@ -95,45 +95,45 @@ export class Setting extends plugin {
     }
     // 设置群黑名单
     async setBlackGroup(e) {
-        let setBlackReg = /^#mj封禁?群\d{5,11}?$/i
-        let unsetBlackReg = /^#mj解封群\d{5,11}?$/i
+        let setBlackReg = /^#mj封禁?群(\d{5,11})?$/i
+        let unsetBlackReg = /^#mj解封群(\d{5,11})?$/i
         let [setBlack, unsetBlack] = [
             setBlackReg.exec(e.msg),
             unsetBlackReg.exec(e.msg)
         ]
         // 获取群号
-        let groupNumber = e.msg.match(/(\d{5,11})/)[1] || e.group_id
+        let groupNumber = e.msg.match(/群(\d{5,11})?/)[1] || e.group_id
         // 判断是拉黑
         if (setBlack) {
-            this.setBlackList('black_group', groupNumber, true)
+            this.setBlackList('black_group', Number(groupNumber), true)
         }
         // 判断是解除拉黑
         if (unsetBlack) {
-            this.setBlackList('black_group', groupNumber, false)
+            this.setBlackList('black_group', Number(groupNumber), false)
         }
         return true
     }
     // 设置用户黑名单
     async setBlackUser(e) {
-        let setBlackReg = /^#mj拉黑\d{5,11}$/i
-        let unsetBlackReg = /^#mj解(除拉)?黑\d{5,11}$/i
+        let setBlackReg = /^#mj拉黑(\d{5,11})?$/i
+        let unsetBlackReg = /^#mj解(除拉)?黑(\d{5,11})?$/i
         let [setBlack, unsetBlack] = [
             setBlackReg.exec(e.msg),
             unsetBlackReg.exec(e.msg)
         ]
         // 获取QQ号
-        let qqNumber = e.at || e.msg.match(/(\d{5,11})/)[1]
-        if (qqNumber) {
+        let qqNumber = e.at || e.msg.match(/黑(\d{5,11})?/)[1]
+        if (!qqNumber) {
             e.reply("请检查是否输入正确的QQ号")
             return true
         }
         // 判断是拉黑
         if (setBlack) {
-            this.setBlackList('black_user', qqNumber, true)
+            this.setBlackList('black_user', Number(qqNumber), true)
         }
         // 判断是解除拉黑
         if (unsetBlack) {
-            this.setBlackList('black_user', qqNumber, false)
+            this.setBlackList('black_user', Number(qqNumber), false)
         }
         return true
     }

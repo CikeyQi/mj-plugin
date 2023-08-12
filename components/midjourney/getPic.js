@@ -11,7 +11,7 @@ export async function getPic (imageUrl) {
   const img = await axios.get(imageUrl, {
     responseType: 'arraybuffer',
     proxy:
-      configs.proxy.host && configs.proxy.port
+      configs.proxy.switch && configs.proxy.host && configs.proxy.port
         ? {
             protocol: 'http',
             host: `${configs.proxy.host}`,

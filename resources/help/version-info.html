@@ -1,14 +1,12 @@
-{{extend elemLayout}}
-
-{{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{_res_path}}/help/version-info.css"/>
-{{/block}}
-
-{{block 'main'}}
-{{each changelogs ds idx}}
+{{extend elemLayout}} {{block 'css'}}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{_res_path}}/help/version-info.css"
+/>
+{{/block}} {{block 'main'}} {{each changelogs ds idx}}
 <div class="hydro-bg log-cont">
-  {{set v = ds.version }}
-  {{set isDev = v[v.length-1] === 'v'}}
+  {{set v = ds.version }} {{set isDev = v[v.length-1] === 'v'}}
   <div class="cont {{isDev ? 'dev-cont': ''}}">
     {{if idx === 0 }}
     <div class="cont-title current-version">当前版本 {{v}}</div>
@@ -33,5 +31,4 @@
     </div>
   </div>
 </div>
-{{/each}}
-{{/block}}
+{{/each}} {{/block}}

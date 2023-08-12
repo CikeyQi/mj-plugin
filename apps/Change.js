@@ -5,7 +5,7 @@ import { parseImg } from '../utils/utils.js'
 import { getResults } from '../utils/task.js'
 
 export class Change extends plugin {
-  constructor() {
+  constructor () {
     super({
       /** 功能名称 */
       name: 'MJ-变化',
@@ -25,7 +25,7 @@ export class Change extends plugin {
     })
   }
 
-  async Change(e) {
+  async Change (e) {
     e = await parseImg(e)
     let action = ''
     if (e.msg.match(/(放大|取出)/)) {

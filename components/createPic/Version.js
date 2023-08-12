@@ -1,5 +1,4 @@
 import fs from 'fs'
-import lodash from 'lodash'
 
 let packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 

@@ -33,7 +33,7 @@ export class Setting extends plugin {
     // 读取配置
     const settings = await Config.getSetting()
     // 取出参数
-    const regParam = /(接口|代理)(.+)/g.exec(e.msg)
+    const regParam = /(接口|代理|屏蔽艾特)(.+)/g.exec(e.msg)
     const key = regParam[1]
     let value = regParam[2]
     if (!key) {
@@ -82,6 +82,18 @@ export class Setting extends plugin {
             alterFlag = true
           } else if (value === '关闭') {
             settings.proxy.switch = false
+            alterFlag = true
+          }
+        }
+        break
+      // mj设置公域机器人屏蔽艾特
+      case '屏蔽艾特':
+        if (value.match(/(开启|关闭)/)) {
+          if (value === '开启') {
+            settings.shield = true
+            alterFlag = true
+          } else if (value === '关闭') {
+            settings.shield = false
             alterFlag = true
           }
         }

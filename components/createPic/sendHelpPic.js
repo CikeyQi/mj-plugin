@@ -32,7 +32,7 @@ export async function sendHelpPic(e) {
         {
           "icon": 7,
           "title": "#变幻",
-          "desc": "#变换2 将图2修改重绘"
+          "desc": "#变幻2 将图2修改重绘"
         },
         {
           "icon": 11,
@@ -51,7 +51,7 @@ export async function sendHelpPic(e) {
         },
         {
           "icon": 3,
-          "title": "#MJ帮助",
+          "title": "#mj帮助",
           "desc": "查看帮助"
         }
       ]
@@ -73,6 +73,11 @@ export async function sendHelpPic(e) {
           "icon": 48,
           "title": "#mj设置代理开启",
           "desc": "设置代理开关"
+        },
+        {
+          "icon": 27,
+          "title": "#mj设置屏蔽艾特开启",
+          "desc": "仅在频道公域机器人有效"
         }
       ]
     },

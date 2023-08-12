@@ -5,7 +5,7 @@ import { parseImg } from '../utils/utils.js'
 import { getResults } from '../utils/task.js'
 
 export class Change extends plugin {
-  constructor () {
+  constructor() {
     super({
       /** 功能名称 */
       name: 'MJ-变化',
@@ -17,7 +17,7 @@ export class Change extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^/mj (change|c) [UuVv] [1-4]$',
+          reg: '^#(放大|取出|变(换|化|幻))[1-4]$',
           /** 执行方法 */
           fnc: 'Change'
         }
@@ -25,16 +25,15 @@ export class Change extends plugin {
     })
   }
 
-  async Change (e) {
+  async Change(e) {
     e = await parseImg(e)
     let action = ''
-    const type = e.msg.split(' ')[2].toLowerCase()
-    if (type == 'u') {
+    if (e.msg.match(/(放大|取出)/)) {
       action = 'UPSCALE'
-    } else if (type == 'v') {
+    } else if (e.msg.match(/变(换|幻|化)/)) {
       action = 'VARIATION'
     }
-    const index = e.msg.split(' ')[3]
+    const index = Number(e.msg.match(/[1-4]/)[0])
     const taskId = await redis.get(`midjourney:taskId:${e.user_id}`)
     if (!taskId) {
       e.reply(

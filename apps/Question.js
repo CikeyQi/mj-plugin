@@ -18,13 +18,13 @@ export class Question extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^/mj (question|q) all$',
+          reg: '^#查询(所有|全部)结果$',
           /** 执行方法 */
           fnc: 'QuestionAll'
         },
         {
           /** 命令正则匹配 */
-          reg: '^/mj (question|q) (\\d+)$',
+          reg: '^#查询结果(\\d+)$',
           /** 执行方法 */
           fnc: 'Question'
         }
@@ -34,13 +34,12 @@ export class Question extends plugin {
 
   async Question (e) {
     // 判断命令中是否有任务ID
-    const reg = /^\/mj (question|q) (\d+)$/
-    const match = e.msg.match(reg)
+    const match = /^#查询结果(\d+)$/.exec(e.msg)
     let taskId = ''
     if (!match) {
       taskId = await redis.get(`midjourney:taskId:${e.user_id}`)
     } else {
-      taskId = match[2]
+      taskId = match[1]
     }
     if (taskId.length != 16) {
       const queAll = await list()

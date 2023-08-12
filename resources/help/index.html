@@ -1,11 +1,6 @@
-{{extend defaultLayout}}
-
-{{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{_res_path}}/help/index.css"/>
-<% style = style.replace(/{{_res_path}}/g, _res_path) %>
-{{@style}}
-{{/block}}
-
+{{extend defaultLayout}} {{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{_res_path}}/help/index.css" />
+<% style = style.replace(/{{_res_path}}/g, _res_path) %> {{@style}} {{/block}}
 {{block 'main'}}
 
 <div class="info-box">
@@ -15,8 +10,7 @@
   </div>
 </div>
 
-{{each helpGroup group}}
-{{set len = group?.list?.length || 0 }}
+{{each helpGroup group}} {{set len = group?.list?.length || 0 }}
 <div class="cont-box">
   <div class="help-group">{{group.group}}</div>
   {{if len > 0}}
@@ -31,14 +25,11 @@
       {{if idx%colCount === colCount-1 && idx>0 && idx< len-1}}
     </div>
     <div class="tr">
-      {{/if}}
-      {{/each}}
-      <% for(let i=(len-1)%colCount; i< colCount-1 ; i++){ %>
+      {{/if}} {{/each}} <% for(let i=(len-1)%colCount; i< colCount-1 ; i++){ %>
       <div class="td"></div>
       <% } %>
     </div>
   </div>
   {{/if}}
 </div>
-{{/each}}
-{{/block}}
+{{/each}} {{/block}}

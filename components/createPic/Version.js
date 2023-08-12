@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-let packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 
 const getLine = function (line) {
   line = line.replace(/(^\s*\*|\r)/g, '')
@@ -14,15 +14,15 @@ const getLine = function (line) {
 
 const yunzaiVersion = packageJson.version
 const isMiao = packageJson.name === 'miao-yunzai'
-const isTrss = Array.isArray(Bot.uin) ? true : false
+const isTrss = !!Array.isArray(Bot.uin)
 
-let Version = {
+const Version = {
   isMiao,
   isTrss,
-  get version() {
+  get version () {
     return currentVersion
   },
-  get yunzai() {
+  get yunzai () {
     return yunzaiVersion
   }
 }

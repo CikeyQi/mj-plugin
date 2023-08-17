@@ -12,5 +12,15 @@ export async function list () {
     Log.e('未配置Midjourney API')
     return false
   }
-  return await axios.get(baseAPI + '/mj/task/list')
+  const configs = Config.getSetting()
+  return await axios.get(baseAPI + '/mj/task/list',
+    configs.proxy.switch && configs.proxy.host && configs.proxy.port
+      ? {
+        proxy: {
+          protocol: 'http',
+          host: `${configs.proxy.host}`,
+          port: `${Number(configs.proxy.port)}`
+        }
+      }
+      : undefined)
 }

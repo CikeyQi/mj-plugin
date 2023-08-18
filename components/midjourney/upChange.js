@@ -19,15 +19,17 @@ export async function change (params) {
     return false
   }
   const configs = Config.getSetting()
-  return await axios.post(baseAPI + '/mj/submit/change', params,
+  return await axios.post(
+    baseAPI + '/mj/submit/change',
+    params,
     configs.proxy.switch && configs.proxy.host && configs.proxy.port
       ? {
-        proxy:
-        {
-          protocol: 'http',
-          host: `${configs.proxy.host}`,
-          port: `${Number(configs.proxy.port)}`
+          proxy: {
+            protocol: 'http',
+            host: `${configs.proxy.host}`,
+            port: `${Number(configs.proxy.port)}`
+          }
         }
-      }
-      : undefined)
+      : undefined
+  )
 }

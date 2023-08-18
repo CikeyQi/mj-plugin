@@ -18,12 +18,12 @@ export async function fetch (id) {
     baseAPI + `/mj/task/${id}/fetch`,
     configs.proxy.switch && configs.proxy.host && configs.proxy.port
       ? {
-        proxy: {
-          protocol: 'http',
-          host: `${configs.proxy.host}`,
-          port: `${Number(configs.proxy.port)}`
+          proxy: {
+            protocol: 'http',
+            host: `${configs.proxy.host}`,
+            port: `${Number(configs.proxy.port)}`
+          }
         }
-      }
       : undefined
   )
 }

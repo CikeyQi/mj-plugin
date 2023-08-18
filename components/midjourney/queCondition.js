@@ -15,14 +15,17 @@ export async function listByCondition (params) {
     return false
   }
   const configs = Config.getSetting()
-  return await axios.post(baseAPI + '/mj/task/list-by-condition', params,
+  return await axios.post(
+    baseAPI + '/mj/task/list-by-condition',
+    params,
     configs.proxy.switch && configs.proxy.host && configs.proxy.port
       ? {
-        proxy: {
-          protocol: 'http',
-          host: `${configs.proxy.host}`,
-          port: `${Number(configs.proxy.port)}`
+          proxy: {
+            protocol: 'http',
+            host: `${configs.proxy.host}`,
+            port: `${Number(configs.proxy.port)}`
+          }
         }
-      }
-      : undefined)
+      : undefined
+  )
 }

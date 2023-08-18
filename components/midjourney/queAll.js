@@ -13,14 +13,16 @@ export async function list () {
     return false
   }
   const configs = Config.getSetting()
-  return await axios.get(baseAPI + '/mj/task/list',
+  return await axios.get(
+    baseAPI + '/mj/task/list',
     configs.proxy.switch && configs.proxy.host && configs.proxy.port
       ? {
-        proxy: {
-          protocol: 'http',
-          host: `${configs.proxy.host}`,
-          port: `${Number(configs.proxy.port)}`
+          proxy: {
+            protocol: 'http',
+            host: `${configs.proxy.host}`,
+            port: `${Number(configs.proxy.port)}`
+          }
         }
-      }
-      : undefined)
+      : undefined
+  )
 }

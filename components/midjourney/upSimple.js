@@ -17,14 +17,17 @@ export async function simpleChange (params) {
     return false
   }
   const configs = Config.getSetting()
-  return await axios.post(baseAPI + '/mj/submit/simple-change', params, configs.proxy.switch && configs.proxy.host && configs.proxy.port
-    ? {
-      proxy:
-      {
-        protocol: 'http',
-        host: `${configs.proxy.host}`,
-        port: `${Number(configs.proxy.port)}`
-      }
-    }
-    : undefined)
+  return await axios.post(
+    baseAPI + '/mj/submit/simple-change',
+    params,
+    configs.proxy.switch && configs.proxy.host && configs.proxy.port
+      ? {
+          proxy: {
+            protocol: 'http',
+            host: `${configs.proxy.host}`,
+            port: `${Number(configs.proxy.port)}`
+          }
+        }
+      : undefined
+  )
 }

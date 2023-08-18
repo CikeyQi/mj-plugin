@@ -17,15 +17,17 @@ export async function describe (params) {
     return false
   }
   const configs = Config.getSetting()
-  return await axios.post(baseAPI + '/mj/submit/describe', params,
+  return await axios.post(
+    baseAPI + '/mj/submit/describe',
+    params,
     configs.proxy.switch && configs.proxy.host && configs.proxy.port
       ? {
-        proxy:
-        {
-          protocol: 'http',
-          host: `${configs.proxy.host}`,
-          port: `${Number(configs.proxy.port)}`
+          proxy: {
+            protocol: 'http',
+            host: `${configs.proxy.host}`,
+            port: `${Number(configs.proxy.port)}`
+          }
         }
-      }
-      : undefined)
+      : undefined
+  )
 }

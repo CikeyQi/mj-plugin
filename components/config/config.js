@@ -94,11 +94,15 @@ class Config {
    */
   getGroupPolicy (groupID) {
     const policy = this.getPolicy()
-    const currentGroupPolicy = {}
+    let currentGroupPolicy = {}
     for (const key in policy.group_property.global) {
-      currentGroupPolicy[key] =
-        policy.group_property[groupID][key] ||
-        policy.group_property.global[key]
+      if (policy.group_property[groupID]) {
+        currentGroupPolicy[key] =
+          policy.group_property[groupID][key] ||
+          policy.group_property.global[key];
+      } else {
+        currentGroupPolicy[key] = policy.group_property.global[key]
+      }
     }
     return currentGroupPolicy
   }

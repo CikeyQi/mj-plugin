@@ -16,14 +16,14 @@ export async function fetch (id) {
   const configs = Config.getSetting()
   return await axios.get(
     baseAPI + `/mj/task/${id}/fetch`,
-    configs.proxy.host && configs.proxy.port
+    configs.proxy.switch && configs.proxy.host && configs.proxy.port
       ? {
-          proxy: {
-            protocol: 'http',
-            host: `${configs.proxy.host}`,
-            port: `${Number(configs.proxy.port)}`
-          }
+        proxy: {
+          protocol: 'http',
+          host: `${configs.proxy.host}`,
+          port: `${Number(configs.proxy.port)}`
         }
+      }
       : undefined
   )
 }

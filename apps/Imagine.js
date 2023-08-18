@@ -112,7 +112,7 @@ export class Imagine extends plugin {
       // 获取当前群策略
       const currentGroupPolicy = Config.getGroupPolicy(e.group_id)
       // 判断CD开关是否开启
-      if (!currentGroupPolicy.group_cool_time_switch) return false
+      if (currentGroupPolicy.group_cool_time_switch) return false
       // 查询是否在CD中
       const personRecord = JSON.parse(
         await redis.get(`MJ:PersonRecord:${e.group_id}:${e.user_id}`)
@@ -157,7 +157,7 @@ export class Imagine extends plugin {
     } else {
       // 获取私聊策略
       const currentPrivatePolicy = Config.getPolicy()
-      if (!currentPrivatePolicy.private_cool_time_switch) return false
+      if (currentPrivatePolicy.private_cool_time_switch) return false
       const privateRecord = JSON.parse(
         await redis.get(`MJ:PrivateRecord:${e.user_id}`)
       )

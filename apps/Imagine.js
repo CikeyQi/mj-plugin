@@ -39,7 +39,7 @@ export class Imagine extends plugin {
       for (let i = 0; i < chineseText.length; i++) {
         const translation = await Translate.translate(chineseText[i]);
         if (translation !== false) {
-          prompt = prompt.replace(chineseText[i], translation.translatedText);
+          prompt = prompt.replace(chineseText[i], translation);
         } else {
           await e.reply('翻译失败了，请检查配置后再试', true);
           break;

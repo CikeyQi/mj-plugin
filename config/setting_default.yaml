@@ -1,6 +1,0 @@
-midjourney_proxy_api: null
-shield: false
-proxy:
-  host: null
-  port: null
-  switch: false

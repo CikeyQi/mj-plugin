@@ -1,109 +1,72 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import axios from 'axios'
-import Config from '../components/config/config.js'
-import Log from '../utils/logs.js'
-import Init from '../model/init.js'
+import { pluginResources } from '../model/path.js';
+import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 
 export class Setting extends plugin {
-  constructor () {
-    super({
-      /** 功能名称 */
-      name: 'MJ-设置',
-      /** 功能描述 */
-      dsc: 'Midjourney 设置',
-      event: 'message',
-      /** 优先级，数字越小等级越高 */
-      priority: 1009,
-      rule: [
-        {
-          /** 命令正则匹配 */
-          reg: '^#mj设置.+$',
-          /** 执行方法 */
-          fnc: 'Setting',
-          /** 主人权限 */
-          permission: 'master'
-        }
-      ]
-    })
-  }
+    constructor() {
+        super({
+            /** 功能名称 */
+            name: 'MJ-设置',
+            /** 功能描述 */
+            dsc: 'Midjourney 设置',
+            event: 'message',
+            /** 优先级，数字越小等级越高 */
+            priority: 1009,
+            rule: [
+                {
+                    /** 命令正则匹配 */
+                    reg: '^#?(mj|MJ)设置$',
+                    /** 执行方法 */
+                    fnc: 'setting'
+                }
+            ]
+        })
+    }
 
-  async Setting (e) {
-    // 初始化
-    Init.initSetting()
-    // 读取配置
-    const settings = await Config.getSetting()
-    // 取出参数
-    const regParam = /(接口|代理|屏蔽艾特)(.+)/g.exec(e.msg)
-    const key = regParam[1]
-    let value = regParam[2]
-    if (!key) {
-      e.reply('配置项不存在,请检查输入')
-      return true
+    async setting(e) {
+        if (!global.mjClient) {
+            await e.reply("未连接到 Midjourney Bot，请先使用 #mj连接", true);
+            return true
+        }
+        const response = await mjClient.Settings();
+        const TmpModels = [];
+        const TmpItem = []
+        for (let i = 0; i < response.content.components[0].components[0].options.length; i++) {
+            const item = response.content.components[0].components[0].options[i];
+            TmpItem.push({
+                list1: item.emoji ? item.emoji.name + item.label : item.label,
+                list2: '选择器（单选）',
+                able: item.default ? true : false
+            });
+        }
+        TmpModels.push(TmpItem);
+
+        for (let i = 1; i < response.content.components.length; i++) {
+            const TmpItem = []
+            for (let j = 0; j < response.content.components[i].components.length; j++) {
+                const item = response.content.components[i].components[j];
+                TmpItem.push({
+                    list1: item.emoji ? item.emoji.name + item.label : item.label,
+                    list2: '按钮（单选）',
+                    able: item.style === 3 ? true : false
+                });
+            }
+            TmpModels.push(TmpItem);
+        }
+        const base64 = await puppeteer.screenshot("mj-plugin", {
+            saveId: "Setting",
+            imgType: "png",
+            tplFile: `${pluginResources}/listTemp/listTemp.html`,
+            pluginResources,
+            header: "Midjourney 设置",
+            lable: "在此处设置的内容将会使账号全局生效，请谨慎设置",
+            sidebar: `设置项：${response.content.components.length}个`,
+            list1: "选项",
+            list2: "类型",
+            modelsGroup: TmpModels,
+            notice: response.content.content
+        });
+        await e.reply(base64);
+        return true
     }
-    // 修改标志位,修改成功后修改为true
-    let alterFlag = false
-    switch (key) {
-      // mj设置接口
-      case '接口':
-        if (value.endsWith('/')) {
-          value = value.substring(0, value.length - 1)
-        }
-        try {
-          const response = await axios.get(`${value}/mj/task/list`)
-          // 如果是200，说明接口正常
-          if (response.status == 200) {
-            settings.midjourney_proxy_api = value
-            alterFlag = true
-          }
-        } catch (e) {
-          e.reply('配置项代理修改失败，测试接口连通性失败，请检查配置是否正确')
-          return true
-        }
-        break
-      // mj设置代理
-      case '代理':
-        // mj设置代理地址
-        if (value.match(/[0-9.:]{9,21}/)) {
-          const pattern =
-            /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):[0-9]{1,5}$/
-          if (!pattern.test(value)) {
-            e.reply('请输入正确的ip地址,格式为127.0.0.1:7890', false)
-          } else {
-            [settings.proxy.host, settings.proxy.port] = value.split(':')
-            alterFlag = true
-          }
-        }
-        // mj设置代理开关
-        if (value.match(/(开启|关闭)/)) {
-          if (value === '开启') {
-            settings.proxy.switch = true
-            alterFlag = true
-          } else if (value === '关闭') {
-            settings.proxy.switch = false
-            alterFlag = true
-          }
-        }
-        break
-      // mj设置公域机器人屏蔽艾特
-      case '屏蔽艾特':
-        if (value.match(/(开启|关闭)/)) {
-          if (value === '开启') {
-            settings.shield = true
-            alterFlag = true
-          } else if (value === '关闭') {
-            settings.shield = false
-            alterFlag = true
-          }
-        }
-        break
-    }
-    if (alterFlag) {
-      Config.setSetting(settings)
-      e.reply(`配置项${key}已修改为${value}`)
-      Log.i('更新配置项', key, value)
-    } else {
-      e.reply(`配置项${key}无法修改为${value}`)
-    }
-    return true
-  }
 }

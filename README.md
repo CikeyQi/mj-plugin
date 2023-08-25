@@ -95,9 +95,9 @@ pnpm restart
 
 ## 功能演示
 
-### Midjourney Imgine 想象
+### Midjourney Imgine 绘制
 
-指令：`#想象` 可带图
+指令：`#绘制` 可带图
 
 <p>
   </a>

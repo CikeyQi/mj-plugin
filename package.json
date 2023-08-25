@@ -1,6 +1,6 @@
 {
   "name": "mj-plugin",
-  "version": "0.0.6",
+  "version": "2.0.0",
   "description": "Yunzai-Bot的AI绘图插件",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,9 @@
   "module": "index.js",
   "dependencies": {
     "axios": "^1.4.0",
-    "image-size": "^2.0.0-alpha.1"
+    "midjourney": "^4.3.11",
+    "https-proxy-agent": "^.0.1",
+    "isomorphic-ws": "^5.0.0"
   },
   "keywords": [
     "Yunzai-Bot",

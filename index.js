@@ -37,5 +37,6 @@ for (const i in files) {
   apps[name] = ret[i].value[Object.keys(ret[i].value)[0]]
 }
 Init.initConfig()
+Init.initClient()
 export { apps }
 logger.info('---------------')

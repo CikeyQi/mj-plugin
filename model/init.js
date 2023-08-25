@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { Main } from '../apps/Main.js'
 import Config from '../components/Config.js'
 import { pluginRoot } from '../model/path.js'
 import Log from '../utils/logs.js'
@@ -32,6 +33,17 @@ class Init {
       }
     }
     Config.setConfig(config_yaml)
+  }
+
+  initClient() {
+    if (Config.getConfig().server_id && Config.getConfig().channel_id && Config.getConfig().salai_token) {
+      try {
+        Log.i('正在尝试登录 Midjourney Bot...')
+        Main()
+      } catch (err) {
+        Log.e('自启动登录 Midjourney Bot 失败', err)
+      }
+    }
   }
 }
 

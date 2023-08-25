@@ -16,7 +16,7 @@ export class Imagine extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)绘制([\\s\\S]*)$',
+          reg: '^#?(mj|MJ)(绘制|想象)([\\s\\S]*)$',
           /** 执行方法 */
           fnc: 'imagine'
         }
@@ -31,7 +31,7 @@ export class Imagine extends plugin {
       return true
     }
 
-    const msg = e.msg.replace(/#?(mj|MJ)绘制/, '').trim();
+    const msg = e.msg.replace(/#?(mj|MJ)(绘制|想象)/, '').trim();
     const chineseText = msg.match(/[\u4e00-\u9fa5]+/g);
     let prompt = e.msg;
     

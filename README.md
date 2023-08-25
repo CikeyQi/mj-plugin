@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://ap-plugin.com/"><img src="./resources/readme/logo.svg" width="200" height="200" alt="mj-plugin"></a>
+  <a href="https://ap-plugin.com/"><img src="./resources/readme/header.png" width="100%" height="100%" alt="mj-plugin"></a>
 </p>
 
 <div align="center">
@@ -10,25 +10,18 @@ _🎉 基于 Yunzai-Bot 的 AI 绘图插件 🎉_
 
 </div>
 
-<p align="center">
-  </a>
-    <img src="./resources/readme/header.png">
-  </a>
-</p>
-
----
 
 <span id="header"></span>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Nodejs-16.x+-6BA552.svg" alt="Nodejs">
+  <img src="https://img.shields.io/badge/Nodejs-18.x+-6BA552.svg" alt="Nodejs">
   <img src="https://img.shields.io/badge/Yunzai_Bot-v3-red.svg" alt="NoneBot">
   <br>
   </a>
-    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-%E8%92%99%E5%BE%B7%E5%B9%BC%E7%A8%9A%E5%9B%AD%EF%BC%88%E5%B7%B2%E6%BB%A1%EF%BC%89-green?style=flat-square" alt="QQ Chat Group">
+    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-%E8%92%99%E5%BE%B7%E5%B9%BC%E7%A8%9A%E5%9B%AD-green?style=flat-square" alt="QQ Chat Group">
   </a>
     <a href="https://jq.qq.com/?_wv=1027&k=OtkECVdE">
-    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-%E7%92%83%E6%9C%88%E5%B9%BC%E7%A8%9A%E5%9B%AD%EF%BC%88%E5%B7%B2%E6%BB%A1%EF%BC%89-yellow?style=flat-square" alt="QQ Chat Group">
+    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-%E7%92%83%E6%9C%88%E5%B9%BC%E7%A8%9A%E5%9B%AD-yellow?style=flat-square" alt="QQ Chat Group">
   </a>
     <a href="https://jq.qq.com/?_wv=1027&k=FZUabhdf">
     <img src="https://img.shields.io/badge/QQ%E7%BE%A4-%E7%A8%BB%E5%A6%BB%E5%B9%BC%E7%A8%9A%E5%9B%AD-purple?style=flat-square" alt="QQ Chat Group">
@@ -40,12 +33,12 @@ _🎉 基于 Yunzai-Bot 的 AI 绘图插件 🎉_
   ·
   <a href="#安装插件">开始使用</a>
   ·
-  <a href="#配置接口">配置接口</a>
+  <a href="#配置参数">配置参数</a>
 </p>
 
 ## 简介
 
-MJ-Plugin 是一款在 QQ 内快速调用[Midjourney](https://www.midjourney.com/)进行多参数便捷 AI 绘图的[Yunzai-Bot](https://github.com/Le-niao/Yunzai-Bot)插件，本插件功能不断拓展中，更多功能敬请期待……
+MJ-Plugin 是一款在 QQ 内快速调用[Midjourney](https://www.midjourney.com/)进行多参数便捷 AI 绘图的[Yunzai-Bot](https://github.com/Le-niao/Yunzai-Bot)插件，已兼容 Midjourney 大部分操作，在不同的地方体验 Discord 中的 Midjourney 带来的无限想象
 
 <br>
 
@@ -59,10 +52,10 @@ cd Yunzai-Bot
 
 #### 2. 克隆本仓库至 plugins 目录
 
-- 使用 Gitee（国内服务器推荐使用此方法）
+- 使用 Ghproxy（国内服务器推荐使用此方法）
 
 ```
-git clone https://gitee.com/CikeyQi/mj-plugin.git ./plugins/mj-plugin
+git clone https://ghproxy.com/https://gitee.com/CikeyQi/mj-plugin.git ./plugins/mj-plugin
 ```
 
 - 使用 Github
@@ -79,75 +72,72 @@ pnpm restart
 
 <br><br>
 
-## 配置接口
+## 配置参数
 
-[点击配置midjourney-proxy](https://github.com/novicezk/midjourney-proxy/blob/main/docs/zeabur-start.md)
+### 获取 salai_token
+  [登录 Discord](https://discord.com/channels/@me) F12 或者 [Ctrl + Shift + I] 或者 [Command + Option + I] 打开开发者工具，然后在 Console 中输入以下代码：
 
-配置好API服务端后，对机器人使用命令 `#mj设置接口`
+  ```javascript
+  window.webpackChunkdiscord_app.push([
+    [Math.random()],
+    {},
+    (req) => {
+      for (const m of Object.keys(req.c)
+        .map((x) => req.c[x].exports)
+        .filter((x) => x)) {
+        if (m.default && m.default.getToken !== undefined) {
+          return copy(m.default.getToken());
+        }
+        if (m.getToken !== undefined) {
+          return copy(m.getToken());
+        }
+      }
+    },
+  ]);
+  console.log("%cWorked!", "font-size: 50px");
+  console.log(`%您的Token在剪贴板了!`, "font-size: 16px");
+  ```
 
-示例：`#mj设置接口https://midjourney-proxy.zeabur.app`
+  也可以通过 查看 network [获取 discord token](https://www.androidauthority.com/get-discord-token-3149920/)
 
-**如果你是公域机器人**：`#mj屏蔽艾特开启` 即可屏蔽艾特
+  ---
 
-使用方法：对机器人使用命令 `#mj帮助`
+  ### 获取server_id和channel_id
 
-<br><br>
+  [创建一个 Discord 服务器](https://discord.com/blog/starting-your-first-discord-server) 并邀请 [Midjourney Bot](https://docs.midjourney.com/docs/invite-the-bot)
 
-## 功能演示
-
-### Midjourney Imgine 绘制
-
-指令：`#绘制` 可带图
-
-<p>
-  </a>
-    <img src="./resources/readme/imagine.png">
-  </a>
-</p>
-
-### Midjourney Upscale 放大
-
-指令：`#放大[图片序号1-4]`
-
-<p>
-  </a>
-    <img src="./resources/readme/upscale.png">
-  </a>
-</p>
-
-### Midjourney Variation 变幻
-
-指令：`#变幻[图片序号1-4]`
-
-<p>
-  </a>
-    <img src="./resources/readme/variation.png">
-  </a>
-</p>
-
-### Midjourney Describe 识图
-
-指令：`#描述` 带上图
-
-<p>
-  </a>
-    <img src="./resources/readme/describe.png">
-  </a>
-</p>
+  ```bash
+  # 在浏览器中复制你的服务器网址
+  # `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+  server_id: "your-server-id"
+  channel_id: "your-channel-id"
+  salai_token: "上面刚获取的的，在你剪切版里"
+  ```
 
 <br><br>
 
-## Todo
+## 功能列表
 
-- [ ] 支持更多的参数，如图片比例
-- [ ] 增加预设功能
-- [ ] 增加百度审核功能
-- [ ] 支持API鉴权
-- [ ] 增加分群策略
+ - [x] Imagine 想象/绘制
+ - [x] Variation 变化
+ - [x] Upscale 放大
+ - [x] Reroll 重绘
+ - [x] Blend 融合
+ - [x] FaceSwap 换脸
+ - [x] Shorten 优化
+ - [x] Describe 描述
+ - [x] Vary 调整
+ - [x] Vary 调整
+ - [x] Zoomout 拓展
+ - [x] Pan 平移
+ - [x] Info 信息
+ - [x] Setting 设置
+
+<br>
 
 ## 致谢
 
-[Midjourney-proxy](https://github.com/novicezk/midjourney-proxy)：代理 MidJourney 的discord频道，实现api形式调用AI绘图
+[midjourney-api](https://github.com/erictik/midjourney-api)：MidJourney client. Unofficial Node.js client
 
 ## 声明
 

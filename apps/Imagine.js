@@ -31,7 +31,8 @@ export class Imagine extends plugin {
       return true
     }
 
-    const chineseText = e.msg.match(/[\u4e00-\u9fa5]+/g);
+    const msg = e.msg.replace(/#?(mj|MJ)绘制/, '').trim();
+    const chineseText = msg.match(/[\u4e00-\u9fa5]+/g);
     let prompt = e.msg;
     
     if (chineseText !== null) {

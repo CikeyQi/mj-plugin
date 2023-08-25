@@ -1,7 +1,7 @@
 import plugin from '../../../lib/plugins/plugin.js'
 
 export class Fast extends plugin {
-  constructor() {
+  constructor () {
     super({
       /** 功能名称 */
       name: 'MJ-快速模式',
@@ -17,19 +17,19 @@ export class Fast extends plugin {
           /** 执行方法 */
           fnc: 'fast',
           /** 主人权限 */
-          permission: "master",
+          permission: 'master'
         }
       ]
     })
   }
 
-  async fast(e) {
+  async fast (e) {
     if (!global.mjClient) {
-      await e.reply("未连接到 Midjourney Bot，请先使用 #mj连接", true);
+      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
       return true
     }
-    await mjClient.Fast();
-    await e.reply('Midjourney 已切换到快速模式');
+    await mjClient.Fast()
+    await e.reply('Midjourney 已切换到快速模式')
     return true
   }
 }

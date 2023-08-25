@@ -1,14 +1,14 @@
-server_id: ''
-channel_id: ''
-salai_token: ''
-huggingface_token: ''
+server_id: ""
+channel_id: ""
+salai_token: ""
+huggingface_token: ""
 debug: false
 proxy: false
-proxy_url: 'http://127.0.0.1:7890'
+proxy_url: "http://127.0.0.1:7890"
 translate_use: 0
 baidu_translate:
-  appid: ''
-  appkey: ''
+  appid: ""
+  appkey: ""
 youdao_translate:
-  appid: ''
-  appkey: ''
+  appid: ""
+  appkey: ""

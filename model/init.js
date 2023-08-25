@@ -5,11 +5,11 @@ import { pluginRoot } from '../model/path.js'
 import Log from '../utils/logs.js'
 
 class Init {
-  constructor() {
+  constructor () {
     this.initConfig()
   }
 
-  initConfig() {
+  initConfig () {
     const config_default_path = `${pluginRoot}/config/config_default.yaml`
     if (!fs.existsSync(config_default_path)) {
       Log.e('默认设置文件不存在，请检查或重新安装插件')
@@ -35,8 +35,12 @@ class Init {
     Config.setConfig(config_yaml)
   }
 
-  initClient() {
-    if (Config.getConfig().server_id && Config.getConfig().channel_id && Config.getConfig().salai_token) {
+  initClient () {
+    if (
+      Config.getConfig().server_id &&
+      Config.getConfig().channel_id &&
+      Config.getConfig().salai_token
+    ) {
       try {
         Log.i('正在尝试登录 Midjourney Bot...')
         Main()

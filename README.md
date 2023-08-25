@@ -10,7 +10,6 @@ _🎉 基于 Yunzai-Bot 的 AI 绘图插件 🎉_
 
 </div>
 
-
 <span id="header"></span>
 
 <p align="center">
@@ -75,63 +74,64 @@ pnpm restart
 ## 配置参数
 
 ### 获取 salai_token
-  [登录 Discord](https://discord.com/channels/@me) F12 或者 [Ctrl + Shift + I] 或者 [Command + Option + I] 打开开发者工具，然后在 Console 中输入以下代码：
 
-  ```javascript
-  window.webpackChunkdiscord_app.push([
-    [Math.random()],
-    {},
-    (req) => {
-      for (const m of Object.keys(req.c)
-        .map((x) => req.c[x].exports)
-        .filter((x) => x)) {
-        if (m.default && m.default.getToken !== undefined) {
-          return copy(m.default.getToken());
-        }
-        if (m.getToken !== undefined) {
-          return copy(m.getToken());
-        }
+[登录 Discord](https://discord.com/channels/@me) F12 或者 [Ctrl + Shift + I] 或者 [Command + Option + I] 打开开发者工具，然后在 Console 中输入以下代码：
+
+```javascript
+window.webpackChunkdiscord_app.push([
+  [Math.random()],
+  {},
+  (req) => {
+    for (const m of Object.keys(req.c)
+      .map((x) => req.c[x].exports)
+      .filter((x) => x)) {
+      if (m.default && m.default.getToken !== undefined) {
+        return copy(m.default.getToken());
       }
-    },
-  ]);
-  console.log("%cWorked!", "font-size: 50px");
-  console.log(`%您的Token在剪贴板了!`, "font-size: 16px");
-  ```
+      if (m.getToken !== undefined) {
+        return copy(m.getToken());
+      }
+    }
+  },
+]);
+console.log("%cWorked!", "font-size: 50px");
+console.log(`%您的Token在剪贴板了!`, "font-size: 16px");
+```
 
-  也可以通过 查看 network [获取 discord token](https://www.androidauthority.com/get-discord-token-3149920/)
+也可以通过 查看 network [获取 discord token](https://www.androidauthority.com/get-discord-token-3149920/)
 
-  ---
+---
 
-  ### 获取server_id和channel_id
+### 获取server_id和channel_id
 
-  [创建一个 Discord 服务器](https://discord.com/blog/starting-your-first-discord-server) 并邀请 [Midjourney Bot](https://docs.midjourney.com/docs/invite-the-bot)
+[创建一个 Discord 服务器](https://discord.com/blog/starting-your-first-discord-server) 并邀请 [Midjourney Bot](https://docs.midjourney.com/docs/invite-the-bot)
 
-  ```bash
-  # 在浏览器中复制你的服务器网址
-  # `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
-  server_id: "your-server-id"
-  channel_id: "your-channel-id"
-  salai_token: "上面刚获取的的，在你剪切版里"
-  ```
+```bash
+# 在浏览器中复制你的服务器网址
+# `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+server_id: "your-server-id"
+channel_id: "your-channel-id"
+salai_token: "上面刚获取的的，在你剪切版里"
+```
 
 <br><br>
 
 ## 功能列表
 
- - [x] Imagine 想象/绘制
- - [x] Variation 变化
- - [x] Upscale 放大
- - [x] Reroll 重绘
- - [x] Blend 融合
- - [x] FaceSwap 换脸
- - [x] Shorten 优化
- - [x] Describe 描述
- - [x] Vary 调整
- - [x] Vary 调整
- - [x] Zoomout 拓展
- - [x] Pan 平移
- - [x] Info 信息
- - [x] Setting 设置
+- [x] Imagine 想象/绘制
+- [x] Variation 变化
+- [x] Upscale 放大
+- [x] Reroll 重绘
+- [x] Blend 融合
+- [x] FaceSwap 换脸
+- [x] Shorten 优化
+- [x] Describe 描述
+- [x] Vary 调整
+- [x] Vary 调整
+- [x] Zoomout 拓展
+- [x] Pan 平移
+- [x] Info 信息
+- [x] Setting 设置
 
 <br>
 

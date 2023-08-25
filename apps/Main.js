@@ -27,10 +27,10 @@ class ProxyWebSocket extends WebSocket {
 export async function Main() {
   try {
     const client = new Midjourney({
-      ServerId: "",
-      ChannelId: "",
-      SalaiToken: "",
-      HuggingFaceToken: "",
+      ServerId: "1125079547856027698",
+      ChannelId: "1125079547856027701",
+      SalaiToken: "OTQ0NjU1NTgyNDY2NTY0MTk2.Ghi8Y7.Id_I_2zcBDderh4Ta_YmdJjUdOniQNeaNT5MUk",
+      HuggingFaceToken: "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",
       Debug: true,
       Ws: true,
       fetch: proxyFetch,

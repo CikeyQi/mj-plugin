@@ -212,7 +212,7 @@ export const bannedWords = [
     "sexualiz",
     "sexual",
   ];
-  export function detectBannedWords(prompt) {
+  export default function detectBannedWords(prompt) {
     const matches = [];
     bannedWords.forEach((word) => {
       const regex = new RegExp(`\\b${word}\\b`, "gi");
@@ -221,8 +221,5 @@ export const bannedWords = [
         matches.push(...wordMatches);
       }
     });
-    if (matches.length > 0) {
-      return matches;
-    }
-    return true;
+    return matches
   }

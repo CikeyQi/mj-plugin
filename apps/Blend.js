@@ -26,12 +26,6 @@ export class Blend extends plugin {
 
     async blend(e) {
 
-        const bannedWords = await detectBannedWords(e.msg)
-        if (bannedWords.length > 0) {
-            await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
-            return true
-        }
-
         if (!global.mjClient) {
             await e.reply("未连接到 Midjourney Bot，请先使用 #mj连接", true);
             return true
@@ -50,6 +44,12 @@ export class Blend extends plugin {
         const prompt = e.img.map((img) => {
             return img
         }).join(' ');
+
+        const bannedWords = await detectBannedWords(e.msg)
+        if (bannedWords.length > 0) {
+          await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
+          return true
+        }
 
         try {
             e.reply('正在混合，请稍后...')

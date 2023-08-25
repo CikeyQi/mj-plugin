@@ -25,18 +25,18 @@ export class Shorten extends plugin {
 
     async shorten(e) {
 
-        const bannedWords = await detectBannedWords(e.msg)
-        if (bannedWords.length > 0) {
-            await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
-            return true
-        }
-
         if (!global.mjClient) {
             await e.reply("未连接到 Midjourney Bot，请先使用 #mj连接", true);
             return true
         }
 
         const prompt = e.msg.replace(/^#?(mj|MJ)优化/, "").trim();
+
+        const bannedWords = await detectBannedWords(e.msg)
+        if (bannedWords.length > 0) {
+          await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
+          return true
+        }
 
         try {
             e.reply('正在优化，请稍后...')

@@ -1,5 +1,6 @@
 import detectBannedWords from '../components/BannedWords.js'
 import plugin from '../../../lib/plugins/plugin.js'
+import Translate from '../utils/translate.js'
 import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
 
@@ -26,18 +27,25 @@ export class Imagine extends plugin {
 
   async imagine(e) {
 
-    const bannedWords = await detectBannedWords(e.msg)
-    if (bannedWords.length > 0) {
-      await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
-      return true
-    }
-
     if (!global.mjClient) {
       await e.reply("未连接到 Midjourney Bot，请先使用 #mj连接", true);
       return true
     }
 
-    const prompt = e.msg.replace(/^#?(mj|MJ)绘制/, "").trim();
+    const chineseText = e.msg.match(/[\u4e00-\u9fa5]+/g);
+    let prompt = e.msg;
+    
+    if (chineseText !== null) {
+      for (let i = 0; i < chineseText.length; i++) {
+        const translation = await Translate.translate(chineseText[i]);
+        if (translation !== false) {
+          prompt = prompt.replace(chineseText[i], translation.translatedText);
+        } else {
+          await e.reply('翻译失败了，请检查配置后再试', true);
+          break;
+        }
+      }
+    }
 
     try {
       e.reply('正在绘制，请稍后...')

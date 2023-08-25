@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import WebSocket from "isomorphic-ws";
 import Log from "../utils/logs.js";
-import Config from "../components/config.js";
+import Config from "../components/Config.js";
 
 const proxyFetch = async (input, init) => {
   const agent = new HttpsProxyAgent((Config.getConfig()).proxy_url, {

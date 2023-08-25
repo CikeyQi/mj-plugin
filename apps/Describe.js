@@ -1,4 +1,3 @@
-import detectBannedWords from '../components/BannedWords.js'
 import plugin from '../../../lib/plugins/plugin.js'
 import Log from '../utils/logs.js'
 

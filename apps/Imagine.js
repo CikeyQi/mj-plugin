@@ -1,4 +1,3 @@
-import detectBannedWords from '../components/BannedWords.js'
 import plugin from '../../../lib/plugins/plugin.js'
 import Translate from '../utils/translate.js'
 import getPic from '../components/Proxy.js'

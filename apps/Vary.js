@@ -1,4 +1,3 @@
-import detectBannedWords from '../components/BannedWords.js'
 import plugin from '../../../lib/plugins/plugin.js'
 import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
@@ -26,12 +25,6 @@ export class Vary extends plugin {
 
     async vary(e) {
 
-        const bannedWords = await detectBannedWords(e.msg)
-        if (bannedWords.length > 0) {
-            await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
-            return true
-        }
-
         if (!global.mjClient) {
             await e.reply("未连接到 Midjourney Bot，请先使用 #mj连接", true);
             return true
@@ -49,7 +42,6 @@ export class Vary extends plugin {
             }
         }
 
-        // 判断是否有可用的调整选项：微妙，强大，如果是微妙，index为Vary (Subtle)，如果是强大，index为Vary (Strong)，如果都不是，index为undefined
         const index = e.msg.match(/微妙|强大/)?.[0] === '微妙' ? 'Vary (Subtle)' : e.msg.match(/微妙|强大/)?.[0] === '强大' ? 'Vary (Strong)' : undefined;
 
         if (!index) {

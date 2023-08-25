@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import crypto from 'crypto'
 import Log from './logs.js'
-import Config from '../components/config.js'
+import Config from '../components/Config.js'
 import lodash from 'lodash'
 
 class Translate {

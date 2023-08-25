@@ -33,8 +33,8 @@ export class Imagine extends plugin {
 
     const msg = e.msg.replace(/#?(mj|MJ)(绘制|想象)/, '').trim();
     const chineseText = msg.match(/[\u4e00-\u9fa5]+/g);
-    let prompt = e.msg;
-    
+    let prompt = msg
+
     if (chineseText !== null) {
       for (let i = 0; i < chineseText.length; i++) {
         const translation = await Translate.translate(chineseText[i]);
@@ -45,6 +45,11 @@ export class Imagine extends plugin {
           break;
         }
       }
+    }
+
+    if (!e.isMaster) {
+      prompt = prompt.replace(/--fast/g, '');
+      prompt = prompt.replace(/--turbo/g, '');
     }
 
     try {

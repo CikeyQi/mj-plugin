@@ -57,7 +57,7 @@ export class Custom extends plugin {
             await e.reply(`上一次的绘制结果不允许使用${index}`);
             return true
         }
-        
+
         try {
             e.reply(`正在使用${index}，请稍后...`)
             const response = await mjClient.Custom({
@@ -69,7 +69,7 @@ export class Custom extends plugin {
                     Log.i(`[${progress}]绘制中，当前状态：${uri}`);
                 },
             });
-                        
+
             await redis.set(`mj:${e.user_id}`, JSON.stringify(response));
             await redis.set(`mj:${response.id}`, JSON.stringify(response));
 

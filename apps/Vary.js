@@ -48,7 +48,7 @@ export class Vary extends plugin {
                 return true
             }
         }
-        
+
         // 判断是否有可用的调整选项：微妙，强大，如果是微妙，index为Vary (Subtle)，如果是强大，index为Vary (Strong)，如果都不是，index为undefined
         const index = e.msg.match(/微妙|强大/)?.[0] === '微妙' ? 'Vary (Subtle)' : e.msg.match(/微妙|强大/)?.[0] === '强大' ? 'Vary (Strong)' : undefined;
 
@@ -75,7 +75,7 @@ export class Vary extends plugin {
                     Log.i(`[${progress}]绘制中，当前状态：${uri}`);
                 },
             });
-            
+
             await redis.set(`mj:${e.user_id}`, JSON.stringify(response));
             await redis.set(`mj:${response.id}`, JSON.stringify(response));
 

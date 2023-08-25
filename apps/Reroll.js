@@ -55,7 +55,7 @@ export class Reroll extends plugin {
             await e.reply(`上一次的绘制结果不允许使用🔄，请先使用 #mj绘制`);
             return true
         }
-        
+
         try {
             e.reply(`正在重绘，请稍后...`)
             const response = await mjClient.Custom({
@@ -66,7 +66,7 @@ export class Reroll extends plugin {
                     Log.i(`[${progress}]绘制中，当前状态：${uri}`);
                 },
             });
-                        
+
             await redis.set(`mj:${e.user_id}`, JSON.stringify(response));
             await redis.set(`mj:${response.id}`, JSON.stringify(response));
 

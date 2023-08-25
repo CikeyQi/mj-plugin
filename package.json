@@ -9,9 +9,8 @@
   "type": "module",
   "module": "index.js",
   "dependencies": {
-    "axios": "^1.4.0",
     "midjourney": "^4.3.11",
-    "https-proxy-agent": "^.0.1",
+    "https-proxy-agent": "^7.0.1",
     "isomorphic-ws": "^5.0.0"
   },
   "keywords": [

@@ -3,9 +3,10 @@ import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import WebSocket from "isomorphic-ws";
 import Log from "../utils/logs.js";
+import Config from "../components/config.js";
 
 const proxyFetch = async (input, init) => {
-  const agent = new HttpsProxyAgent("http://127.0.0.1:7890", {
+  const agent = new HttpsProxyAgent((Config.getConfig()).proxy_url, {
     keepAlive: true,
   });
   if (!init) init = {};
@@ -15,7 +16,7 @@ const proxyFetch = async (input, init) => {
 
 class ProxyWebSocket extends WebSocket {
   constructor(address, options) {
-    const agent = new HttpsProxyAgent("http://127.0.0.1:7890", {
+    const agent = new HttpsProxyAgent((Config.getConfig()).proxy_url, {
       keepAlive: true,
     });
     if (!options) options = {};
@@ -27,14 +28,14 @@ class ProxyWebSocket extends WebSocket {
 export async function Main() {
   try {
     const client = new Midjourney({
-      ServerId: "1125079547856027698",
-      ChannelId: "1125079547856027701",
-      SalaiToken: "OTQ0NjU1NTgyNDY2NTY0MTk2.Ghi8Y7.Id_I_2zcBDderh4Ta_YmdJjUdOniQNeaNT5MUk",
-      HuggingFaceToken: "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",
-      Debug: true,
+      ServerId: (Config.getConfig()).server_id,
+      ChannelId: (Config.getConfig()).channel_id,
+      SalaiToken: (Config.getConfig()).salai_token,
+      HuggingFaceToken: (Config.getConfig()).huggingface_token,
+      Debug: (Config.getConfig()).debug,
       Ws: true,
-      fetch: proxyFetch,
-      WebSocket: ProxyWebSocket,
+      fetch: (Config.getConfig()).proxy ? proxyFetch : fetch,
+      WebSocket: (Config.getConfig()).proxy ? ProxyWebSocket : WebSocket,
     });
     await client.init();
     global.mjClient = client;

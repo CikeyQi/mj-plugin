@@ -1,0 +1,13 @@
+server_id: ''
+channel_id: ''
+salai_token: ''
+huggingface_token: ''
+debug: false
+proxy: false
+proxy_url: 'http://127.0.0.1:7890'
+baidu_translate:
+  id: ''
+  key: ''
+youdao_translate:
+  id: ''
+  key: ''

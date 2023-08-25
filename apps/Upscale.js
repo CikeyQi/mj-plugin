@@ -48,7 +48,7 @@ export class Upscale extends plugin {
                 return true
             }
         }
-        
+
         const Num = e.msg.match(/第([一二三四五六七八九十\d]+)张/)?.[1];
 
         if (!Num) {
@@ -82,7 +82,7 @@ export class Upscale extends plugin {
                     Log.i(`[${progress}]绘制中，当前状态：${uri}`);
                 },
             });
-                        
+
             await redis.set(`mj:${e.user_id}`, JSON.stringify(response));
             await redis.set(`mj:${response.id}`, JSON.stringify(response));
 

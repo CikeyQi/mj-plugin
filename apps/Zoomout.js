@@ -99,7 +99,7 @@ export class Zoomout extends plugin {
                     Log.i(`[${progress}]绘制中，当前状态：${uri}`);
                 },
             });
-            
+
             await redis.set(`mj:${e.user_id}`, JSON.stringify(response));
             await redis.set(`mj:${response.id}`, JSON.stringify(response));
 

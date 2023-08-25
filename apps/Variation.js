@@ -48,7 +48,7 @@ export class Variation extends plugin {
                 return true
             }
         }
-        
+
         const Num = e.msg.match(/第([一二三四五六七八九十\d]+)张/)?.[1];
 
         if (!Num) {

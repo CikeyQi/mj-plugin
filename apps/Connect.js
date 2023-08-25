@@ -1,8 +1,6 @@
 import plugin from '../../../lib/plugins/plugin.js'
 import { Main } from './Main.js'
 
-await Main();
-
 export class Connect extends plugin {
   constructor() {
     super({

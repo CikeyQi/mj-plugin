@@ -37,12 +37,12 @@ export class Shorten extends plugin {
         }
 
         const prompt = e.msg.replace(/^#?(mj|MJ)优化/, "").trim();
-        
+
         try {
             e.reply('正在优化，请稍后...')
             const response = await mjClient.Shorten(prompt);
             await e.reply(response.prompts.join("\n"), true);
-                        
+
             await redis.set(`mj:${e.user_id}`, JSON.stringify(response));
             await redis.set(`mj:${response.id}`, JSON.stringify(response));
 

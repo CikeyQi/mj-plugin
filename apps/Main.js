@@ -132,7 +132,7 @@ export class Help extends plugin {
           },
           {
             icon: 35,
-            title: '#MJ拓展(Zoom Out 2x|Zoom Out 1.5x|Custom Zoom)',
+            title: '#MJ拓展',
             desc: '图片缩放，向外扩大画布，增加更多细节'
           },
           {

@@ -127,8 +127,8 @@ salai_token: "上面刚获取的的，在你剪切版里"
 - [x] Shorten 优化
 - [x] Describe 描述
 - [x] Vary 调整
-- [x] Vary 调整
 - [x] Zoomout 拓展
+- [x] Custom 按钮
 - [x] Pan 平移
 - [x] Info 信息
 - [x] Setting 设置

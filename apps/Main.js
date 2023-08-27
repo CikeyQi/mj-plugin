@@ -89,73 +89,73 @@ export class Help extends plugin {
         "list": [
           {
             "icon": 1,
-            "title": "#MJ想象",
-            "desc": "以文生图"
+            "title": "#MJ想象<描述>",
+            "desc": "根据您的提示生成低分辨率图像选项的网格"
           },
           {
             "icon": 54,
             "title": "#MJ描述[图片]",
-            "desc": "以图生文"
+            "desc": "根据您的图片生成相关提示词"
           },
           {
             "icon": 5,
-            "title": "#MJ混合",
-            "desc": "图片融合"
+            "title": "#MJ混合[图片][图片]",
+            "desc": "2-5张图像合并成一个新颖的新图像"
           },
           {
             "icon": 7,
-            "title": "#MJ放大[图片id]第一张",
-            "desc": "放大指定id图片,默认最近一次结果"
+            "title": "#MJ放大第<1|2|3|4>张",
+            "desc": "放大图像，生成所选图像的更大版本并添加更多细节"
           },
           {
             "icon": 38,
-            "title": "#MJ变化[图片id]第一张",
-            "desc": "变化指定id图片,默认最近一次结果"
+            "title": "#MJ变化第<1|2|3|4>张",
+            "desc": "生成与所选图像的整体风格和构图相似的新图像网格"
           },
           {
             "icon": 11,
-            "title": "#MJ重绘[图片id]",
-            "desc": "指定id图片tag重绘,默认最近一次结果"
+            "title": "#MJ重绘",
+            "desc": "重新运行原始提示，生成新的图像网格"
           },
           {
             "icon": 86,
-            "title": "#MJ换脸",
-            "desc": "将图1的脸换至图2"
+            "title": "#MJ换脸[图片][图片]",
+            "desc": "换脸，顾名思义"
           },
           {
             "icon": 54,
-            "title": "#MJ调整[图片id](强大|微妙)",
-            "desc": "图片微调,使用前请先放大图片"
+            "title": "#MJ调整(强大|微妙)",
+            "desc": "使用不同的升级选项重做图像"
           },
           {
             "icon": 3,
-            "title": "#MJ平移{上|下|左|右)",
-            "desc": "图片平移,使用前请先放大图片"
+            "title": "#MJ平移(上|下|左|右)",
+            "desc": "向对应方向扩大画布，增加更多细节"
           },
           {
             "icon": 35,
-            "title": "#MJ拓展[图片id]custom(1-10)",
-            "desc": "图片拓展,使用前请先放大图片"
+            "title": "#MJ拓展(Zoom Out 2x|Zoom Out 1.5x|Custom Zoom)",
+            "desc": "图片缩放，向外扩大画布，增加更多细节"
           },
           {
             "icon": 36,
             "title": "#MJ优化",
-            "desc": "优化tag描述词"
+            "desc": "优化输入的描述，可能影响提示准确性"
           },
           {
             "icon": 30,
             "title": "#MJ按钮",
-            "desc": "模拟与官方MJ机器人交互"
+            "desc": "模拟与官方MJ机器人交互，兼容大部分按钮功能"
           },
           {
             "icon": 62,
             "title": "#MJ参数",
-            "desc": "可选绘图参数列表"
+            "desc": "查看可选绘制参数，萌新必背"
           },
           {
             "icon": 62,
             "title": "#MJ帮助",
-            "desc": "MJ-plugin插件帮助"
+            "desc": "MJ-Plugin插件帮助"
           }
         ],
       },
@@ -175,12 +175,12 @@ export class Help extends plugin {
           {
             "icon": 63,
             "title": "#MJ快速模式",
-            "desc": "快速模式,请注意额度使用"
+            "desc": "快速模式，请注意额度使用"
           },
           {
             "icon": 67,
             "title": "#MJ舒缓模式",
-            "desc": "舒缓模式,没有额外费用,速度较慢"
+            "desc": "舒缓模式，没有额外费用，速度较慢"
           },
           {
             "icon": 68,

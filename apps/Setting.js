@@ -3,7 +3,7 @@ import { pluginResources } from '../model/path.js'
 import puppeteer from '../../../lib/puppeteer/puppeteer.js'
 
 export class Setting extends plugin {
-  constructor () {
+  constructor() {
     super({
       /** 功能名称 */
       name: 'MJ-设置',
@@ -23,7 +23,7 @@ export class Setting extends plugin {
     })
   }
 
-  async setting (e) {
+  async setting(e) {
     if (!global.mjClient) {
       await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
       return true
@@ -75,6 +75,19 @@ export class Setting extends plugin {
       notice: response.content.content
     })
     await e.reply(base64)
+
+    await redis.set(`mj:${e.user_id}`, JSON.stringify(response))
+    await redis.set(`mj:${response.id}`, JSON.stringify(response))
+    
+    const optionList = []
+    for (let i = 0; i < response.options.length; i++) {
+      optionList.push(`[${response.options[i].label}]`)
+    }
+    if (optionList.length > 0) {
+      await e.reply(
+        `[ID:${response.id}]\n可选的操作：\n${optionList.join(' | ')}`
+      )
+    }
     return true
   }
 }

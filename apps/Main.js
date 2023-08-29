@@ -27,6 +27,9 @@ class ProxyWebSocket extends WebSocket {
     if (!options) options = {}
     options.agent = agent
     super(address, options)
+    this.on('error', (err) => {
+      Log.e(err)
+    })
   }
 }
 

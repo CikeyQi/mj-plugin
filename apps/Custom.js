@@ -3,7 +3,7 @@ import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
 
 export class Custom extends plugin {
-  constructor () {
+  constructor() {
     super({
       /** 功能名称 */
       name: 'MJ-按钮',
@@ -23,7 +23,7 @@ export class Custom extends plugin {
     })
   }
 
-  async custom (e) {
+  async custom(e) {
     if (!global.mjClient) {
       await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
       return true
@@ -54,13 +54,17 @@ export class Custom extends plugin {
       return true
     }
 
+    if (typeof taskInfo.content === 'string') {
+      taskInfo.content = taskInfo.content.match(/\*\*(.*)\*\*/)?.[1]
+    }
+
     try {
       e.reply(`正在使用${index}，请稍后...`)
       const response = await mjClient.Custom({
         msgId: taskInfo.id.toString(),
         customId: rerollCustomID,
         flags: taskInfo.flags,
-        content: taskInfo.content?.match(/(?<=\*\*).+?(?=\*\*)/)?.[0],
+        content: taskInfo.content,
         loading: (uri, progress) => {
           Log.i(`[${progress}]绘制中，当前状态：${uri}`)
         }

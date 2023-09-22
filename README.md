@@ -54,7 +54,7 @@ cd Yunzai-Bot
 - 使用 Ghproxy（国内服务器推荐使用此方法）
 
 ```
-git clone https://ghproxy.com/https://gitee.com/CikeyQi/mj-plugin.git ./plugins/mj-plugin
+git clone https://ghproxy.com/https://github.com/ap-plugin/mj-plugin.git ./plugins/mj-plugin
 ```
 
 - 使用 Github

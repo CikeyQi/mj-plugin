@@ -31,7 +31,7 @@ export class Admin extends plugin {
         Init.initConfig()
         // 读取配置项
         var config = Config.getConfig()
-        const key = /(服务器ID|频道ID|账号token|抱脸token|调试模式|代理(地址)?|使用翻译接口|(百度|有道)翻译(appid|appkey))/g.exec(e.msg)?.[1]
+        const key = /(服务器ID|频道ID|账号token|抱脸token|调试模式|代理(地址)?|使用翻译接口|(百度|有道)翻译(appid|appkey))|切换(mj|niji)/g.exec(e.msg)?.[1]
         let value = e.msg.replace(/#?(mj|MJ)配置/, '').replace(new RegExp(`${key}`), '').trim()
         // key匹配失败,value存在时
         if (!key && value != '') {
@@ -116,6 +116,14 @@ export class Admin extends plugin {
                     }
                 }
                 break
+            case '切换mj':
+                config.bot_type = 'Midjourney'
+                alterFlag = true
+                break
+            case '切换niji':
+                config.bot_type = 'Nijijourney'
+                alterFlag = true
+                break
             default:
                 // 如果key为空且value为空则展示
                 const TmpModels = [
@@ -167,6 +175,10 @@ export class Admin extends plugin {
                         {
                             list1: '有道appkey',
                             list2: config.youdao_translate.appkey ? config.youdao_translate.appkey.substring(0, 10) + '...' : ''
+                        },
+                        {
+                            list1: 'Bot类型',
+                            list2: config.bot_type
                         }
                     ]
                 ]
@@ -193,7 +205,8 @@ export class Admin extends plugin {
                     key.match(/(服务器ID|频道ID|账号token|抱脸token|代理地址|(百度|有道)翻译(appid|appkey))/) ? `配置项${key}已设置为${value}`
                         : key === '调试模式' || key === '代理' ? `设置项${key}已${value}`
                             : key === '使用翻译接口' ? value == '不' ? '当前将不再使用翻译' : `翻译接口已修改为${value}`
-                                : "???"
+                                : key === '切换mj' || key === '切换niji' ? `已切换到${value} Bot，请使用 #mj重连 生效`
+                                    : '未知错误'
                 ]
                 Log.i('更新配置项', key, value)
                 e.reply(msg, true)

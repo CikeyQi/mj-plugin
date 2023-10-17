@@ -39,6 +39,7 @@ export async function Main () {
       ServerId: Config.getConfig().server_id,
       ChannelId: Config.getConfig().channel_id,
       SalaiToken: Config.getConfig().salai_token,
+      BotId: Config.getConfig().bot_type === 'Nijijourney' ? 'NijiBot' : 'MJBot',
       HuggingFaceToken: Config.getConfig().huggingface_token,
       Debug: Config.getConfig().debug,
       Ws: true,
@@ -257,6 +258,16 @@ export class Help extends plugin {
             icon: 22,
             title: '#MJ配置',
             desc: '查看当前所有配置项'
+          },
+          {
+            icon: 23,
+            title: '#MJ切换mj',
+            desc: '使用Midjourney Bot绘制图片'
+          },
+          {
+            icon: 24,
+            title: '#MJ切换niji',
+            desc: '使用Nijijourney Bot绘制图片'
           }
         ]
       }

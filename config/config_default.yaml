@@ -1,6 +1,7 @@
 server_id: ""
 channel_id: ""
 salai_token: ""
+bot_type: "Midjourney"
 huggingface_token: ""
 debug: false
 proxy: false

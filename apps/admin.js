@@ -208,7 +208,7 @@ export class Admin extends plugin {
                     key.match(/(服务器ID|频道ID|账号token|抱脸token|代理地址|(百度|有道)翻译(appid|appkey))/) ? `配置项${key}已设置为${value}`
                         : key === '调试模式' || key === '代理' ? `设置项${key}已${value}`
                             : key === '使用翻译接口' ? value == '不' ? '当前将不再使用翻译' : `翻译接口已修改为${value}`
-                                : key === '切换' ? `已切换到${value} Bot，请使用 #mj重连 生效`
+                                : key === '切换' ? value == 'mj' ? `已切换到Midjourney Bot，请使用 #mj重连 生效` : `已切换到Nijijourney Bot，请使用 #mj重连 生效`
                                     : '未知错误'
                 ]
                 Log.i('更新配置项', key, value)

@@ -31,7 +31,7 @@ export class Admin extends plugin {
         Init.initConfig()
         // 读取配置项
         var config = Config.getConfig()
-        const key = /(服务器ID|频道ID|账号token|抱脸token|调试模式|代理(地址)?|使用翻译接口|(百度|有道)翻译(appid|appkey))|切换(mj|niji)/g.exec(e.msg)?.[1]
+        const key = /(服务器ID|频道ID|账号token|抱脸token|调试模式|代理(地址)?|使用翻译接口|(百度|有道)翻译(appid|appkey))|切换/g.exec(e.msg)?.[1]
         let value = e.msg.replace(/#?(mj|MJ)配置/, '').replace(new RegExp(`${key}`), '').trim()
         // key匹配失败,value存在时
         if (!key && value != '') {
@@ -116,12 +116,15 @@ export class Admin extends plugin {
                     }
                 }
                 break
-            case '切换mj':
-                config.bot_type = 'Midjourney'
-                alterFlag = true
-                break
-            case '切换niji':
-                config.bot_type = 'Nijijourney'
+            case '切换':
+                if (value === 'mj') {
+                    config.bot_type = 'Midjourney'
+                } else if (value === "niji") {
+                    config.bot_type = 'Nijijourney'
+                } else {
+                    e.reply('请输入正确的Bot名称，如#mj配置切换mj/niji', true)
+                    return true
+                }
                 alterFlag = true
                 break
             default:

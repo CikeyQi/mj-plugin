@@ -256,18 +256,13 @@ export class Help extends plugin {
           },
           {
             icon: 22,
-            title: '#MJ配置',
-            desc: '查看当前所有配置项'
+            title: '#MJ配置切换mj/niji',
+            desc: '使用Midjourney/Nijijourney Bot绘制图片'
           },
           {
             icon: 23,
-            title: '#MJ切换mj',
-            desc: '使用Midjourney Bot绘制图片'
-          },
-          {
-            icon: 24,
-            title: '#MJ切换niji',
-            desc: '使用Nijijourney Bot绘制图片'
+            title: '#MJ配置',
+            desc: '查看当前所有配置项'
           }
         ]
       }

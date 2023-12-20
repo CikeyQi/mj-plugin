@@ -15,7 +15,7 @@ export class Shorten extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)优化([\\s\\S]*)$',
+          reg: '^#(mj|MJ)?优化([\\s\\S]*)$',
           /** 执行方法 */
           fnc: 'shorten'
         }
@@ -29,7 +29,7 @@ export class Shorten extends plugin {
       return true
     }
 
-    const prompt = e.msg.replace(/^#?(mj|MJ)优化/, '').trim()
+    const prompt = e.msg.replace(/^#(mj|MJ)?优化/, '').trim()
 
     const bannedWords = await detectBannedWords(e.msg)
     if (bannedWords.length > 0) {

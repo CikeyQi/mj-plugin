@@ -14,7 +14,7 @@ export class Describe extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)描述$',
+          reg: '^#(mj|MJ)?描述$',
           /** 执行方法 */
           fnc: 'describe'
         }

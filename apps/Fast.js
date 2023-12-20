@@ -13,7 +13,7 @@ export class Fast extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)快速模式$',
+          reg: '^#(mj|MJ)?快速模式$',
           /** 执行方法 */
           fnc: 'fast',
           /** 主人权限 */

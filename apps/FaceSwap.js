@@ -15,7 +15,7 @@ export class FaceSwap extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)换脸$',
+          reg: '^#(mj|MJ)?换脸$',
           /** 执行方法 */
           fnc: 'faceswap'
         }

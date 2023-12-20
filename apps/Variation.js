@@ -15,7 +15,7 @@ export class Variation extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)变化([\\s\\S]*)$',
+          reg: '^#(mj|MJ)?变化([\\s\\S]*)$',
           /** 执行方法 */
           fnc: 'variation'
         }

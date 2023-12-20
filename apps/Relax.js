@@ -13,7 +13,7 @@ export class Relax extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)舒缓模式$',
+          reg: '^#(mj|MJ)?舒缓模式$',
           /** 执行方法 */
           fnc: 'relax',
           /** 主人权限 */

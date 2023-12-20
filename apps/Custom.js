@@ -15,7 +15,7 @@ export class Custom extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)按钮([\\s\\S]*)$',
+          reg: '^#(mj|MJ)?按钮([\\s\\S]*)$',
           /** 执行方法 */
           fnc: 'custom'
         }
@@ -43,7 +43,7 @@ export class Custom extends plugin {
       }
     }
 
-    const index = e.msg.replace(/#?(mj|MJ)按钮/, '').trim()
+    const index = e.msg.replace(/#(mj|MJ)?按钮/, '').trim()
 
     const rerollCustomID = taskInfo.options?.find(
       (o) => o.label === index

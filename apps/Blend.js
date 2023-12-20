@@ -16,7 +16,7 @@ export class Blend extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)混合$',
+          reg: '^#(mj|MJ)?混合$',
           /** 执行方法 */
           fnc: 'blend'
         }

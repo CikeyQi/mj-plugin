@@ -15,7 +15,7 @@ export class Vary extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)调整([\\s\\S]*)$',
+          reg: '^#(mj|MJ)?调整([\\s\\S]*)$',
           /** 执行方法 */
           fnc: 'vary'
         }

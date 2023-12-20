@@ -15,7 +15,7 @@ export class Pan extends plugin {
       rule: [
         {
           /** 命令正则匹配 */
-          reg: '^#?(mj|MJ)平移([\\s\\S]*)$',
+          reg: '^#(mj|MJ)?平移([\\s\\S]*)$',
           /** 执行方法 */
           fnc: 'pan'
         }

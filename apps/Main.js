@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { Midjourney } from 'midjourney'
+import { Midjourney } from 'freezer-midjourney-api'
 import fetch from 'node-fetch'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import WebSocket from 'isomorphic-ws'

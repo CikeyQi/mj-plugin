@@ -56,9 +56,10 @@ export function supportGuoba() {
           field: "salai_token",
           label: "Discord Token",
           bottomHelpMessage: "Discord身份验证Token",
-          component: "Input",
+          component: "InputPassword",
           componentProps: {
             placeholder: 'Salai Token',
+            visible: false,
           },
         },
         {

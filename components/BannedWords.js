@@ -212,14 +212,6 @@ export const bannedWords = [
   'sexualiz',
   'sexual'
 ]
-export default function detectBannedWords (prompt) {
-  const matches = []
-  bannedWords.forEach((word) => {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi')
-    const wordMatches = prompt.match(regex)
-    if (wordMatches) {
-      matches.push(...wordMatches)
-    }
-  })
-  return matches
+export default function detectBannedWords(prompt) {
+  return bannedWords.filter(word => prompt.toLowerCase().includes(word.toLowerCase()));
 }

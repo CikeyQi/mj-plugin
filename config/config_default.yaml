@@ -6,6 +6,7 @@ huggingface_token: ""
 debug: false
 proxy: false
 proxy_url: "http://127.0.0.1:7890"
+botton_row: 3
 translate_use: 0
 baidu_translate:
   appid: ""

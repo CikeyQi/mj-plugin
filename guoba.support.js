@@ -179,6 +179,20 @@ export function supportGuoba() {
           },
         },
         {
+          field: "botton_row",
+          label: "单行按钮数量",
+          component: "Select",
+          componentProps: {
+            options: [
+              { label: '一个按钮', value: 1 },
+              { label: '两个按钮', value: 2 },
+              { label: '三个按钮', value: 3 },
+              { label: '四个按钮', value: 4 },
+              { label: '五个按钮', value: 5 },
+            ],
+          },
+        },
+        {
           field: "debug",
           label: "调试模式",
           component: "Switch",

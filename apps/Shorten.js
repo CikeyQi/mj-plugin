@@ -1,5 +1,5 @@
 import detectBannedWords from '../components/BannedWords.js'
-import { makeBotton } from '../components/Botton.js'
+import { makeButton } from '../components/Button.js'
 import plugin from '../../../lib/plugins/plugin.js'
 import Log from '../utils/logs.js'
 
@@ -49,7 +49,7 @@ export class Shorten extends plugin {
       ]);
 
       try {
-        let buttons = await makeBotton(response.options.map(option => option.label), response.id)
+        let buttons = await makeButton(response.options.map(option => option.label), response.id)
   
         await e.reply([
           response.prompts.join('\n'),

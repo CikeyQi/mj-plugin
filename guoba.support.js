@@ -180,7 +180,7 @@ export function supportGuoba() {
           },
         },
         {
-          field: "botton_row",
+          field: "button_row",
           label: "单行按钮数量",
           component: "Select",
           componentProps: {

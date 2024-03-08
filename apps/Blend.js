@@ -1,5 +1,5 @@
 import detectBannedWords from '../components/BannedWords.js'
-import { makeBotton } from '../components/Botton.js'
+import { makeButton } from '../components/Button.js'
 import plugin from '../../../lib/plugins/plugin.js'
 import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
@@ -58,7 +58,7 @@ export class Blend extends plugin {
   
       try {
         const base64 = await getPic(response.uri);
-        let buttons = await makeBotton(response.options.map(option => option.label), response.id);
+        let buttons = await makeButton(response.options.map(option => option.label), response.id);
 
         await e.reply([
           { ...segment.image('base64://' + base64), origin: true },

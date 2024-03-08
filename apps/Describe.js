@@ -1,5 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
-import { makeBotton } from '../components/Botton.js'
+import { makeButton } from '../components/Button.js'
 import Log from '../utils/logs.js'
 
 export class Describe extends plugin {
@@ -44,7 +44,7 @@ export class Describe extends plugin {
       ]);
 
       try {
-        let buttons = await makeBotton(response.options.map(option => option.label), response.id)
+        let buttons = await makeButton(response.options.map(option => option.label), response.id)
   
         await e.reply([
           response.descriptions.join('\n'),

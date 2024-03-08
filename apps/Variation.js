@@ -1,4 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import { makeBotton } from '../components/Botton.js'
 import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
 
@@ -25,54 +26,40 @@ export class Variation extends plugin {
 
   async variation (e) {
     if (!global.mjClient) {
-      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
-      return true
+      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true);
+      return true;
     }
-
-    const taskInfo = await JSON.parse(
-      await redis.get(`mj:${e.msg.match(/\d{19}/)?.[0] || e.user_id}`)
-    )
-
+  
+    const taskId = e.msg.match(/\d{19}/)?.[0] || e.user_id;
+    const taskInfoRaw = await redis.get(`mj:${taskId}`);
+    const taskInfo = taskInfoRaw && JSON.parse(taskInfoRaw);
+  
     if (!taskInfo) {
-      if (e.msg.match(/\d{19}/)) {
-        await e.reply('未找到指定的绘制结果，请检查ID是否正确', true)
-        return true
-      } else {
-        await e.reply('未找到上一次的绘制结果，请先使用 #mj绘制', true)
-        return true
-      }
+      const replyMsg = taskId !== e.user_id ? '未找到指定的绘制结果，请检查ID是否正确' : '未找到上一次的绘制结果，请先使用 #mj绘制';
+      await e.reply(replyMsg, true);
+      return true;
     }
-
-    const Num = e.msg.match(/第([一二三四五六七八九十\d]+)张/)?.[1]
-
+  
+    const Num = e.msg.match(/第([一二三四五六七八九十\d]+)张/)?.[1];
     if (!Num) {
-      await e.reply('请指定要使用变化的图片，例如“#mj变化第一张”', true)
-      return true
+      await e.reply('请指定要使用放大的图片，例如“#mj放大第一张”', true);
+      return true;
     }
-
-    const index = Num.replace(/[一二三四五六七八九十]/g, (s) => {
-      return '一二三四五六七八九十'.indexOf(s) + 1
-    })
-
+    const index = Num.replace(/[一二三四五六七八九十]/g, s => '一二三四五六七八九十'.indexOf(s) + 1);
+  
     if (index < 1 || index > 4) {
-      await e.reply('图片序号超出范围，请指定1-4之间的数字', true)
-      return true
+      await e.reply('图片序号超出范围，请指定1-4之间的数字', true);
+      return true;
     }
-
-    const variationCustomID = taskInfo.options?.find(
-      (o) => o.label === `V${index}`
-    )?.custom
-
-    if (!variationCustomID) {
-      await e.reply(
-        `上一次的绘制结果不允许使用V${index}，请先使用 #mj绘制`,
-        true
-      )
-      return true
+  
+    const upscaleCustomID = taskInfo.options?.find(o => o.label === `V${index}`)?.custom;
+    if (!upscaleCustomID) {
+      await e.reply(`上一次的绘制结果不允许使用U${index}，请先使用 #mj绘制`, true);
+      return true;
     }
 
     try {
-      e.reply('正在变化，请稍后...')
+      await e.reply('正在变化，请稍后...')
       const response = await mjClient.Custom({
         msgId: taskInfo.id.toString(),
         customId: variationCustomID,
@@ -83,30 +70,32 @@ export class Variation extends plugin {
         }
       })
 
-      await redis.set(`mj:${e.user_id}`, JSON.stringify(response))
-      await redis.set(`mj:${response.id}`, JSON.stringify(response))
+      await Promise.all([
+        redis.set(`mj:${e.user_id}`, JSON.stringify(response)),
+        redis.set(`mj:${response.id}`, JSON.stringify(response))
+      ]);
 
       try {
-        const base64 = await getPic(response.uri)
-        await e.reply(segment.image(`base64://${base64}`))
+        const base64 = await getPic(response.uri);
+        let buttons = await makeBotton(response.options.map(option => option.label), response.id);
+  
+        await e.reply([
+          { ...segment.image('base64://' + base64), origin: true },
+          ...buttons
+        ]);
+  
+        if (response.options.length > 0) {
+          await e.reply(`[ID:${response.id}]\n可选的操作：\n${response.options.map(option => `[${option.label}]`).join(' | ')}`);
+        }
       } catch (err) {
-        Log.e(err)
-        await e.reply(response.uri)
-        await e.reply('发送图片遇到问题，错误已发送至控制台')
-      }
-      const optionList = []
-      for (let i = 0; i < response.options.length; i++) {
-        optionList.push(`[${response.options[i].label}]`)
-      }
-      if (optionList.length > 0) {
-        await e.reply(
-          `[ID:${response.id}]\n可选的操作：\n${optionList.join(' | ')}`
-        )
+        Log.e(err);
+        await e.reply(response.uri);
+        await e.reply('发送图片遇到问题，错误已发送至控制台');
       }
     } catch (err) {
-      Log.e(err)
-      e.reply('Midjourney 返回错误：\n' + err, true)
+      Log.e(err);
+      await e.reply('Midjourney 返回错误：\n' + err, true);
     }
-    return true
+    return true;
   }
 }

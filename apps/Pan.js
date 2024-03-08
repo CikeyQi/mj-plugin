@@ -1,4 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import { makeBotton } from '../components/Botton.js'
 import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
 
@@ -24,90 +25,79 @@ export class Pan extends plugin {
   }
 
   async pan (e) {
+
     if (!global.mjClient) {
-      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
-      return true
+      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true);
+      return true;
     }
-
-    const taskInfo = await JSON.parse(
-      await redis.get(`mj:${e.msg.match(/\d{19}/)?.[0] || e.user_id}`)
-    )
-
+  
+    const msgId = e.msg.match(/\d{19}/)?.[0] || e.user_id;
+    const taskInfoRaw = await redis.get(`mj:${msgId}`);
+    const taskInfo = JSON.parse(taskInfoRaw);
+  
     if (!taskInfo) {
-      if (e.msg.match(/\d{19}/)) {
-        await e.reply('未找到指定的绘制结果，请检查ID是否正确', true)
-        return true
-      } else {
-        await e.reply('未找到上一次的绘制结果，请先使用 #mj绘制', true)
-        return true
-      }
+      const replyMsg = e.msg.match(/\d{19}/)
+        ? '未找到指定的绘制结果，请检查ID是否正确'
+        : '未找到上一次的绘制结果，请先使用 #mj绘制';
+      await e.reply(replyMsg, true);
+      return true;
     }
-
-    const index = e.msg.match(/上|下|左|右/)?.[0]
-
+  
+    const index = e.msg.match(/上|下|左|右/)?.[0];
     if (!index) {
-      await e.reply('请指定要使用的拓展倍数，例如“#mj拓展2x/1.5x”', true)
-      return true
+      await e.reply('请指定要使用的平移方向，如“上”、“下”、“左”、“右”', true);
+      return true;
     }
-
-    let customName
-    if (index === '上') {
-      customName = '⬆️'
-    } else if (index === '下') {
-      customName = '⬇️'
-    } else if (index === '左') {
-      customName = '⬅️'
-    } else {
-      customName = '➡️'
-    }
-
+  
+    const directionMap = { '上': '⬆️', '下': '⬇️', '左': '⬅️', '右': '➡️' };
+    const customName = directionMap[index];
+  
     const panCustomID = taskInfo.options?.find(
       (o) => o.label === customName
-    )?.custom
-
+    )?.custom;
+  
     if (!panCustomID) {
-      await e.reply(
-        `上一次的绘制结果不允许使用${customName}，请先使用 #mj放大`
-      )
-      return true
+      await e.reply(`上一次的绘制结果不允许使用${index}方向，请先使用 #mj绘制生成新的内容`, true);
+      return true;
     }
-
+  
+    const content = taskInfo.content?.match(/\*\*(.+?)\*\*/)?.[1];
+  
     try {
-      e.reply(`正在进行${customName}平移，请稍后...`)
+      await e.reply(`正在进行${customName}平移，请稍后...`);
       const response = await mjClient.Custom({
         msgId: taskInfo.id.toString(),
         customId: panCustomID,
-        content: taskInfo.content?.match(/(?<=\*\*).+?(?=\*\*)/)?.[0],
+        content: content,
         flags: taskInfo.flags,
-        loading: (uri, progress) => {
-          Log.i(`[${progress}]绘制中，当前状态：${uri}`)
-        }
-      })
+      });
 
-      await redis.set(`mj:${e.user_id}`, JSON.stringify(response))
-      await redis.set(`mj:${response.id}`, JSON.stringify(response))
+      await Promise.all([
+        redis.set(`mj:${e.user_id}`, JSON.stringify(response)),
+        redis.set(`mj:${response.id}`, JSON.stringify(response))
+      ]);
 
       try {
-        const base64 = await getPic(response.uri)
-        await e.reply(segment.image(`base64://${base64}`))
+        const base64 = await getPic(response.uri);
+        let buttons = await makeBotton(response.options.map(option => option.label), response.id);
+  
+        await e.reply([
+          { ...segment.image('base64://' + base64), origin: true },
+          ...buttons
+        ]);
+  
+        if (response.options.length > 0) {
+          await e.reply(`[ID:${response.id}]\n可选的操作：\n${response.options.map(option => `[${option.label}]`).join(' | ')}`);
+        }
       } catch (err) {
-        Log.e(err)
-        await e.reply(response.uri)
-        await e.reply('发送图片遇到问题，错误已发送至控制台')
-      }
-      const optionList = []
-      for (let i = 0; i < response.options.length; i++) {
-        optionList.push(`[${response.options[i].label}]`)
-      }
-      if (optionList.length > 0) {
-        await e.reply(
-          `[ID:${response.id}]\n可选的操作：\n${optionList.join(' | ')}`
-        )
+        Log.e(err);
+        await e.reply(response.uri);
+        await e.reply('发送图片遇到问题，错误已发送至控制台');
       }
     } catch (err) {
-      Log.e(err)
-      e.reply('Midjourney 返回错误：\n' + err, true)
+      Log.e(err);
+      await e.reply('Midjourney 返回错误：\n' + err, true);
     }
-    return true
+    return true;
   }
 }

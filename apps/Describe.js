@@ -1,4 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import { makeBotton } from '../components/Botton.js'
 import Log from '../utils/logs.js'
 
 export class Describe extends plugin {
@@ -34,26 +35,33 @@ export class Describe extends plugin {
     }
 
     try {
-      e.reply('正在描述，请稍后...')
+      await e.reply('正在描述，请稍后...')
       const response = await mjClient.Describe(e.img[0])
-      await e.reply(response.descriptions.join('\n'), true)
 
-      await redis.set(`mj:${e.user_id}`, JSON.stringify(response))
-      await redis.set(`mj:${response.id}`, JSON.stringify(response))
+      await Promise.all([
+        redis.set(`mj:${e.user_id}`, JSON.stringify(response)),
+        redis.set(`mj:${response.id}`, JSON.stringify(response))
+      ]);
 
-      const optionList = []
-      for (let i = 0; i < response.options.length; i++) {
-        optionList.push(`[${response.options[i].label}]`)
-      }
-      if (optionList.length > 0) {
-        await e.reply(
-          `[ID:${response.id}]\n可选的操作：\n${optionList.join(' | ')}`
-        )
+      try {
+        let buttons = await makeBotton(response.options.map(option => option.label), response.id)
+  
+        await e.reply([
+          response.descriptions.join('\n'),
+          ...buttons
+        ]);
+  
+        if (response.options.length > 0) {
+          await e.reply(`[ID:${response.id}]\n可选的操作：\n${response.options.map(option => `[${option.label}]`).join(' | ')}`);
+        }
+      } catch (err) {
+        Log.e(err);
+        await e.reply('发送内容遇到问题，错误已发送至控制台');
       }
     } catch (err) {
-      Log.e(err)
-      e.reply('Midjourney 返回错误：\n' + err, true)
+      Log.e(err);
+      await e.reply('Midjourney 返回错误：\n' + err, true);
     }
-    return true
+    return true;
   }
 }

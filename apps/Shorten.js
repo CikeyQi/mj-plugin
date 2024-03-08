@@ -1,4 +1,5 @@
 import detectBannedWords from '../components/BannedWords.js'
+import { makeBotton } from '../components/Botton.js'
 import plugin from '../../../lib/plugins/plugin.js'
 import Log from '../utils/logs.js'
 
@@ -24,43 +25,48 @@ export class Shorten extends plugin {
   }
 
   async shorten (e) {
+
     if (!global.mjClient) {
-      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
-      return true
+      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true);
+      return true;
     }
 
     const prompt = e.msg.replace(/^#(mj|MJ)?优化/, '').trim()
 
-    const bannedWords = await detectBannedWords(e.msg)
-    if (bannedWords.length > 0) {
-      await e.reply(
-        `检测到敏感词：${bannedWords.join('，')}，请修改后重试`,
-        true
-      )
-      return true
+    const bannedWords = await detectBannedWords(e.msg);
+    if (bannedWords.length) {
+      await e.reply(`检测到敏感词：${bannedWords.join('，')}，请修改后重试`, true);
+      return true;
     }
 
     try {
-      e.reply('正在优化，请稍后...')
+      await e.reply('正在优化，请稍后...')
       const response = await mjClient.Shorten(prompt)
-      await e.reply(response.prompts.join('\n'), true)
 
-      await redis.set(`mj:${e.user_id}`, JSON.stringify(response))
-      await redis.set(`mj:${response.id}`, JSON.stringify(response))
+      await Promise.all([
+        redis.set(`mj:${e.user_id}`, JSON.stringify(response)),
+        redis.set(`mj:${response.id}`, JSON.stringify(response))
+      ]);
 
-      const optionList = []
-      for (let i = 0; i < response.options.length; i++) {
-        optionList.push(`[${response.options[i].label}]`)
-      }
-      if (optionList.length > 0) {
-        await e.reply(
-          `[ID:${response.id}]\n可选的操作：\n${optionList.join(' | ')}`
-        )
+      try {
+        let buttons = await makeBotton(response.options.map(option => option.label), response.id)
+  
+        await e.reply([
+          response.prompts.join('\n'),
+          ...buttons
+        ]);
+  
+        if (response.options.length > 0) {
+          await e.reply(`[ID:${response.id}]\n可选的操作：\n${response.options.map(option => `[${option.label}]`).join(' | ')}`);
+        }
+      } catch (err) {
+        Log.e(err);
+        await e.reply('发送内容遇到问题，错误已发送至控制台');
       }
     } catch (err) {
-      Log.e(err)
-      e.reply('Midjourney 返回错误：\n' + err, true)
+      Log.e(err);
+      await e.reply('Midjourney 返回错误：\n' + err, true);
     }
-    return true
+    return true;
   }
 }

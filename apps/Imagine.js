@@ -1,4 +1,5 @@
 import plugin from '../../../lib/plugins/plugin.js'
+import { makeBotton } from '../components/Botton.js'
 import Translate from '../utils/translate.js'
 import getPic from '../components/Proxy.js'
 import Log from '../utils/logs.js'
@@ -24,63 +25,65 @@ export class Imagine extends plugin {
     })
   }
 
-  async imagine (e) {
+  async imagine(e) {
+
     if (!global.mjClient) {
-      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true)
-      return true
+      await e.reply('未连接到 Midjourney Bot，请先使用 #mj连接', true);
+      return true;
     }
-
-    const msg = e.msg.replace(/#(mj|MJ)?(绘制|想象)/, '').trim()
-    const chineseText = msg.match(/[\u4e00-\u9fa5]+/g)
-    let prompt = msg
-
-    if (chineseText !== null) {
-      for (let i = 0; i < chineseText.length; i++) {
-        const translation = await Translate.translate(chineseText[i])
-        if (translation !== false) {
-          prompt = prompt.replace(chineseText[i], translation)
+  
+    const msg = e.msg.replace(/#(mj|MJ)?(绘制|想象)/, '').trim();
+  
+    const chineseText = msg.match(/[\u4e00-\u9fa5]+/g);
+    let prompt = msg;
+    if (chineseText) {
+      for (let chineseSegment of chineseText) {
+        const translation = await Translate.translate(chineseSegment);
+        if (translation) {
+          prompt = prompt.replace(chineseSegment, translation);
         } else {
-          await e.reply('翻译失败了，请检查配置后再试', true)
-          break
+          await e.reply('翻译失败了，请检查配置后再试', true);
+          return true;
         }
       }
     }
-
+  
     if (!e.isMaster) {
-      prompt = prompt.replace(/--fast/g, '')
-      prompt = prompt.replace(/--turbo/g, '')
+      prompt = prompt.replace(/--(fast|turbo)/g, '');
     }
-
+  
     try {
-      e.reply('正在绘制，请稍后...')
+      await e.reply('正在绘制，请稍后...');
       const response = await mjClient.Imagine(prompt, (progress, id) => {
-        Log.i(`[${id}]绘制中，当前状态：${progress}`)
-      })
+        Log.i(`[${id}]绘制中，当前状态：${progress}`);
+      });
 
-      await redis.set(`mj:${e.user_id}`, JSON.stringify(response))
-      await redis.set(`mj:${response.id}`, JSON.stringify(response))
+      await Promise.all([
+        redis.set(`mj:${e.user_id}`, JSON.stringify(response)),
+        redis.set(`mj:${response.id}`, JSON.stringify(response))
+      ]);
 
       try {
-        const base64 = await getPic(response.uri)
-        await e.reply(segment.image(`base64://${base64}`))
+        const base64 = await getPic(response.uri);
+        let buttons = await makeBotton(response.options.map(option => option.label), response.id);
+  
+        await e.reply([
+          { ...segment.image('base64://' + base64), origin: true },
+          ...buttons
+        ]);
+  
+        if (response.options.length > 0) {
+          await e.reply(`[ID:${response.id}]\n可选的操作：\n${response.options.map(option => `[${option.label}]`).join(' | ')}`);
+        }
       } catch (err) {
-        Log.e(err)
-        await e.reply(response.uri)
-        await e.reply('发送图片遇到问题，错误已发送至控制台')
-      }
-      const optionList = []
-      for (let i = 0; i < response.options.length; i++) {
-        optionList.push(`[${response.options[i].label}]`)
-      }
-      if (optionList.length > 0) {
-        await e.reply(
-          `[ID:${response.id}]\n可选的操作：\n${optionList.join(' | ')}`
-        )
+        Log.e(err);
+        await e.reply(response.uri);
+        await e.reply('发送图片遇到问题，错误已发送至控制台');
       }
     } catch (err) {
-      Log.e(err)
-      e.reply('Midjourney 返回错误：\n' + err, true)
+      Log.e(err);
+      await e.reply('Midjourney 返回错误：\n' + err, true);
     }
-    return true
+    return true;
   }
 }

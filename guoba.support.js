@@ -185,6 +185,7 @@ export function supportGuoba() {
           component: "Select",
           componentProps: {
             options: [
+              { label: '自适应', value: 0},
               { label: '一个按钮', value: 1 },
               { label: '两个按钮', value: 2 },
               { label: '三个按钮', value: 3 },

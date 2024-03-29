@@ -49,16 +49,22 @@ cd Yunzai-Bot
 - 使用 Ghproxy（国内服务器推荐使用此方法）
 
 ```
-git clone https://mirror.ghproxy.com/https://github.com/ap-plugin/mj-plugin.git ./plugins/mj-plugin
+git clone https://mirror.ghproxy.com/https://github.com/CikeyQi/mj-plugin.git ./plugins/mj-plugin
 ```
 
 - 使用 Github
 
 ```
-git clone https://github.com/ap-plugin/mj-plugin.git ./plugins/mj-plugin
+git clone https://github.com/CikeyQi/mj-plugin.git ./plugins/mj-plugin
 ```
 
-#### 3. 重启 Yunzai
+#### 3. 安装依赖
+
+```
+pnpm install --filter=mj-plugin
+```
+
+#### 4. 重启 Yunzai
 
 ```
 pnpm restart

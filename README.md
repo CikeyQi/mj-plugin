@@ -2,7 +2,7 @@
 
 <img decoding="async" align=right src="resources/readme/girl.png" width="35%">
 
-# MJ-PLUGIN🍊
+# MJ-PLUGIN🥥
 
 - 一个适用于 [Yunzai 系列机器人框架](https://github.com/yhArcadia/Yunzai-Bot-plugins-index) 的的 AI 绘图插件，让你在输入框中拥有便捷的AI绘画体验
 

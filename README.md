@@ -4,9 +4,9 @@
 
 # MJ-PLUGIN🥥
 
-- 一个适用于 [Yunzai 系列机器人框架](https://github.com/yhArcadia/Yunzai-Bot-plugins-index) 的的 AI 绘图插件，让你在输入框中拥有便捷的AI绘画体验
+- 一个适用于 [Yunzai 系列机器人框架](https://github.com/yhArcadia/Yunzai-Bot-plugins-index) 的 AI 绘图插件，让你在输入框中拥有便捷的AI绘画体验
 
-- 使用强大的的 [Midjourney](https://www.midjourney.com) 作为后端，**付费**使用，生成的质量更高，理解能力更好，只需一句话即可生成高质量图片
+- 使用强大的 [Midjourney](https://www.midjourney.com) 作为后端，**付费**使用，生成的质量更高，理解能力更好，只需一句话即可生成高质量图片
 
 - **使用中遇到问题请加QQ群咨询：[707331865](https://qm.qq.com/q/TXTIS9KhO2)**
 
@@ -38,44 +38,44 @@ pnpm install --filter=mj-plugin
 > [!WARNING]
 > 非常不建议手动修改配置文件，本插件已兼容 [Guoba-plugin](https://github.com/guoba-yunzai/guoba-plugin) ，请使用锅巴插件对配置项进行修改
 
-- <details> <summary>获取 Salai Token</summary>
+<details> <summary>获取 Salai Token</summary>
 
-  [登录 Discord](https://discord.com/channels/@me) F12 或者 [Ctrl + Shift + I] 或者 [Command + Option + I] 打开开发者工具，然后在 Console 中输入以下代码：
+[登录 Discord](https://discord.com/channels/@me) F12 或者 [Ctrl + Shift + I] 或者 [Command + Option + I] 打开开发者工具，然后在 Console 中输入以下代码：
 
-  ```javascript
-  window.webpackChunkdiscord_app.push([
-    [Math.random()],
-    {},
-    (req) => {
-      for (const m of Object.keys(req.c)
-        .map((x) => req.c[x].exports)
-        .filter((x) => x)) {
-        if (m.default && m.default.getToken !== undefined) {
-          return copy(m.default.getToken());
-        }
-        if (m.getToken !== undefined) {
-          return copy(m.getToken());
-        }
+```javascript
+window.webpackChunkdiscord_app.push([
+  [Math.random()],
+  {},
+  (req) => {
+    for (const m of Object.keys(req.c)
+      .map((x) => req.c[x].exports)
+      .filter((x) => x)) {
+      if (m.default && m.default.getToken !== undefined) {
+        return copy(m.default.getToken());
       }
-    },
-  ]);
-  console.log("%cWorked!", "font-size: 50px");
-  console.log(`%您的Token在剪贴板了!`, "font-size: 16px");
-  ```
+      if (m.getToken !== undefined) {
+        return copy(m.getToken());
+      }
+    }
+  },
+]);
+console.log("%cWorked!", "font-size: 50px");
+console.log(`%您的Token在剪贴板了!`, "font-size: 16px");
+```
 
-  也可以通过 查看 Network： [获取 Discord Token](https://www.androidauthority.com/get-discord-token-3149920/)
+也可以通过 查看 Network： [获取 Discord Token](https://www.androidauthority.com/get-discord-token-3149920/)
 
-  </details>
+</details>
 
-- <details> <summary>获取 Server_id 和 Channel_id</summary>
+<details> <summary>获取 Server ID 和 Channel ID</summary>
 
-  [创建一个 Discord 服务器](https://discord.com/blog/starting-your-first-discord-server) 并邀请 [Midjourney Bot](https://docs.midjourney.com/docs/invite-the-bot)
+[创建一个 Discord 服务器](https://discord.com/blog/starting-your-first-discord-server) 并邀请 [Midjourney Bot](https://docs.midjourney.com/docs/invite-the-bot)
 
-  ```bash
-  # 在浏览器中复制你的服务器网址
-  # `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
-  ```
-  </details>
+```bash
+# 在浏览器中复制你的服务器网址
+# `https://discord.com/channels/$SERVER_ID/$CHANNEL_ID`
+```
+</details>
 
 ## 功能列表
 
